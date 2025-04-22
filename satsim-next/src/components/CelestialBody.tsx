@@ -6,6 +6,8 @@ import { TextureLoader } from "three";
 import { useStore } from "@/stores/dataStores";
 import { useCameraStore } from "@/stores/cameraStores";
 import { useRef, useState } from "react";
+import { useLogStore } from "@/stores/logStores";
+import { add } from "three/tsl";
 
 type CelestialBodyProps = {
   position: [number, number, number];
@@ -39,13 +41,14 @@ const CelestialBody = ({
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
   const { setCameraPosition, setOrbitTarget } = useCameraStore();
+  const { addLog } = useLogStore();
 
   // Load texture with error handling
   const textureMap = texture ? useLoader(TextureLoader, texture) : null;
 
   // Scale factor
   const scale = 1 / 100;
-  const scaledRadius = radius * scale > 1 ? radius * scale : 1;
+  const scaledRadius = radius * scale > 1 ? radius * scale : 0.4;
 
   // Convert angles to radians
   const obliquityRad = THREE.MathUtils.degToRad(obliquity);
@@ -59,7 +62,12 @@ const CelestialBody = ({
       targetPosition.z += offset;
       setCameraPosition([targetPosition.x, targetPosition.y, targetPosition.z]);
       setOrbitTarget(groupRef.current.position);
-      console.log("Teleported to:", targetPosition);
+      addLog(`Teleported to ${name || "Unnamed"}`);
+      addLog(
+        `Position: ${targetPosition.x.toFixed(2)}, ${targetPosition.y.toFixed(
+          2
+        )}, ${targetPosition.z.toFixed(2)}`
+      );
     }
   };
 
@@ -86,10 +94,10 @@ const CelestialBody = ({
         </mesh>
         <Html>
           <div
-            className="text-white text-sm bg-black/20 px-1 py-0.5 rounded cursor-pointer"
+            className="text-white text-sm bg-black/10 px-1 py-0.5 rounded cursor-pointer"
             onClick={handleTagClick}
           >
-            {name || "Unnamed"}
+            {(name || "Unnamed").toUpperCase()}
           </div>
         </Html>
       </group>
@@ -114,10 +122,10 @@ const CelestialBody = ({
         </mesh>
         <Html>
           <div
-            className="text-white text-sm bg-black bg-opacity-50 px-1 py-0.5 rounded cursor-pointer"
+            className="select-none text-white text-sm bg-black/10 px-1 py-0.5 rounded cursor-pointer"
             onClick={handleTagClick}
           >
-            {name || "Unnamed"}
+            {(name || "Unnamed").toUpperCase()}
           </div>
         </Html>
       </group>

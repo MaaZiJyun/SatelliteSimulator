@@ -12,14 +12,14 @@ import ComputationButton from "./ComputationButton";
 export default function Terminal() {
   const logs = useLogStore((s) => s.logs);
   // const { controller, setController } = useCameraStore();
-  const [activeTab, setActiveTab] = useState("Mission");
+  const [activeTab, setActiveTab] = useState("Output");
 
   return (
     <div className="h-full w-full flex flex-col">
       {/* Navigation Tabs */}
       <div className="flex justify-between items-center px-2">
         <div className="flex text-sm">
-          {["Mission", "Output"].map((tab) => (
+          {["Output", "Mission"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -62,11 +62,6 @@ export default function Terminal() {
 
       {/* Tab Content */}
       <div className="font-mono p-4 h-full w-full overflow-y-auto bg-black text-white">
-        {activeTab === "Mission" && (
-          <div>
-            <p className="text-xs">Mission details will appear here...</p>
-          </div>
-        )}
         {activeTab === "Output" && (
           <div>
             {logs.map((l, i) => (
@@ -75,6 +70,11 @@ export default function Terminal() {
               </p>
             ))}
             <p className="text-xs">Welcome to O.R.B.I.T</p>
+          </div>
+        )}
+        {activeTab === "Mission" && (
+          <div>
+            <p className="text-xs">Mission details will appear here...</p>
           </div>
         )}
       </div>

@@ -89,7 +89,8 @@
       },
       "visual": {
         "color": "#ffcc00",
-        "wireframe": false
+        "wireframe": false,
+        "emissive": true
       }
     }
   ]

@@ -1,17 +1,21 @@
 import { useState } from "react";
 import { useStore } from "@/stores/dataStores";
+import { useLogStore } from "@/stores/logStores";
 
 export default function Beginning() {
   const [error, setError] = useState<string | null>(null);
   const setData = useStore((s) => s.setData);
+  const { addLog } = useLogStore();
 
   const handleFile = async (file: File) => {
     const text = await file.text();
     try {
       const json = JSON.parse(text);
       setData(json); // 存入全局状态
+      addLog(`File loaded: ${file.name}`);
       setError(null); // 清除错误
     } catch (err) {
+      addLog(`Invalid JSON file: ${err}`);
       setError("Invalid JSON file");
     }
   };

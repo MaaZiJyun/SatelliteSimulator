@@ -1,7 +1,7 @@
 "use client";
 import { useStore } from "@/stores/dataStores";
 import {
-  CodeBracketIcon,
+  AtSymbolIcon,
   EllipsisVerticalIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
@@ -29,9 +29,9 @@ const SidebarItem = ({ name, item, onRemove }: SidebarItemProps) => {
         onMouseOver={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
       >
-        <div className="flex items-center space-x-1 cursor-pointer">
-          <CodeBracketIcon className="h-4 w-4" />
-          <h2>{name}</h2>
+        <div className="flex text-white items-center space-x-1 cursor-pointer">
+          <AtSymbolIcon className="h-4 w-4" />
+          <h2 className="text-sm italic">{name}</h2>
         </div>
         {hover && (
           <div className="flex items-center space-x-1">

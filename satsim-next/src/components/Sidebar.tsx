@@ -32,7 +32,7 @@ function SidebarPart({ title, children, onAdd }: PartProps) {
   return (
     <div
       className={`w-full ${
-        open && "h-3/4"
+        open && "bg-white/10"
       } border-t border-gray-500 select-none`}
     >
       <div
@@ -49,7 +49,7 @@ function SidebarPart({ title, children, onAdd }: PartProps) {
           ) : (
             <ChevronRightIcon className="h-4 w-4" />
           )}
-          <h2 className="font-semibold">{title.toUpperCase()}</h2>
+          <h2 className="text-sm font-semibold">{title.toUpperCase()}</h2>
         </div>
         {hover && (
           <div className="flex items-center">
@@ -88,7 +88,7 @@ function SidebarSection({
   return (
     <div className="w-full">
       <div
-        className="flex items-center justify-between px-4"
+        className="flex items-center justify-between px-4 hover:text-white"
         onMouseOver={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
       >
@@ -101,7 +101,7 @@ function SidebarSection({
           ) : (
             <ChevronRightIcon className="h-4 w-4" />
           )}
-          <h2>{title}</h2>
+          <h2 className="text-sm">{title}</h2>
         </div>
         {hover && (
           <div className="flex items-center space-x-1">
@@ -161,7 +161,7 @@ export default function Sidebar() {
   return (
     <div className="h-full w-full overflow-auto">
       <div className="flex items-center justify-between px-4 py-2">
-        <h1 className="text-lg">EXPLORER</h1>
+        <h1 className="text-base">EXPLORER</h1>
         <div className="flex items-center justify-center space-x-2">
           <button
             className="hover:text-[#00ffff] rounded hover:cursor-pointer"
