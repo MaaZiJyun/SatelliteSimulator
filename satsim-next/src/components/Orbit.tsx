@@ -3,6 +3,7 @@
 import * as THREE from "three";
 import { useMemo } from "react";
 import { Line } from "@react-three/drei";
+import { usePreferenceStore } from "@/stores/preferenceStores";
 
 type OrbitProps = {
   center: [number, number, number]; // 焦点 F
@@ -12,7 +13,7 @@ type OrbitProps = {
   segments?: number;
   inclination?: number;
   color?: string;
-  scale?: number;
+  // scale?: number;
 };
 
 export default function Orbit({
@@ -23,8 +24,9 @@ export default function Orbit({
   segments = 128,
   inclination = 0,
   color = "gray",
-  scale = 1 / 100,
-}: OrbitProps) {
+}: // scale = 1 / 100,
+OrbitProps) {
+  const scale = usePreferenceStore((state) => state.scale);
   const orbitPoints = useMemo(() => {
     const a = semiMajorAxis;
     const e = eccentricity;
@@ -114,15 +116,7 @@ export default function Orbit({
     points.forEach((p) => p.applyQuaternion(q));
 
     return points;
-  }, [
-    center,
-    position,
-    semiMajorAxis,
-    eccentricity,
-    segments,
-    inclination,
-    scale,
-  ]);
+  }, [center, position, semiMajorAxis, eccentricity, segments, inclination]);
 
   return (
     <Line points={orbitPoints} color={color} lineWidth={1} dashed={false} />

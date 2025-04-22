@@ -4,8 +4,10 @@ import { create } from "zustand";
 
 type CameraStore = {
     cameraPosition: THREE.Vector3;
+    currentPosition: THREE.Vector3;
     finalPosition: THREE.Vector3;
     orbitTarget: THREE.Vector3;
+    setCurrentPosition: (pos: THREE.Vector3) => void;
     setCameraPosition: (pos: THREE.Vector3) => void;
     setFinalPosition: (pos: THREE.Vector3) => void;
     setOrbitTarget: (target: THREE.Vector3) => void;
@@ -14,9 +16,11 @@ type CameraStore = {
 export const useCameraStore = create<CameraStore>((set) => ({
 
     cameraPosition: new THREE.Vector3(0, 0, 20000), // 初始摄像机位置
+    currentPosition: new THREE.Vector3(0, 0, 20000), // 初始摄像机位置
     finalPosition: new THREE.Vector3(0, 0, 20000), // 初始摄像机位置
     orbitTarget: new THREE.Vector3(0, 0, 0),     // 聚焦点
 
+    setCurrentPosition: (pos) => set({ currentPosition: pos }),
     setCameraPosition: (pos) => set({ cameraPosition: pos }),
     setFinalPosition: (pos) => set({ finalPosition: pos }),
     setOrbitTarget: (target) => set({ orbitTarget: target }),

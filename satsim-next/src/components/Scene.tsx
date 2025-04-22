@@ -9,11 +9,12 @@ import CelestialBody from "./CelestialBody";
 import { usePreferenceStore } from "@/stores/preferenceStores";
 import Orbit from "./Orbit";
 import SmoothCameraPosition from "./SmoothCameraMover";
+import CameraTracker from "./CameraTracker";
 
 function Scene() {
   const { data } = useStore();
   const { finalPosition, orbitTarget } = useCameraStore();
-  const scale = 1 / 1000;
+  const scale = usePreferenceStore((state) => state.scale);
 
   const { showLabels, showOrbits, showTexture, showWareframe, showaxis } =
     usePreferenceStore();
@@ -28,6 +29,7 @@ function Scene() {
   return (
     <Canvas shadows>
       <ambientLight intensity={0} />
+      <CameraTracker />
       <SmoothCameraPosition />
       <PerspectiveCamera
         makeDefault

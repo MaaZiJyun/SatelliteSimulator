@@ -7,6 +7,7 @@ type PreferenceState = {
   showLabels: boolean
   showTexture: boolean
   showWareframe: boolean
+  scale: number
   speed: number
   setShowOrbits: () => void
   setShowaxis: () => void
@@ -22,6 +23,7 @@ export const usePreferenceStore = create<PreferenceState>((set) => ({
   showLabels: true,
   showTexture: true,
   showWareframe: false,
+  scale: 1 / 1000,
   speed: 1,
   setShowOrbits: () => set((state) => ({ showOrbits: !state.showOrbits })),
   setShowaxis: () => set((state) => ({ showaxis: !state.showaxis })),

@@ -8,6 +8,7 @@ import { useCameraStore } from "@/stores/cameraStores";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLogStore } from "@/stores/logStores";
 import { add } from "three/tsl";
+import { usePreferenceStore } from "@/stores/preferenceStores";
 
 type CelestialBodyProps = {
   position: [number, number, number];
@@ -48,17 +49,15 @@ const CelestialBody = ({
 }: CelestialBodyProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
-  const axisRef = useRef<THREE.Line>(null);
+  const scale = usePreferenceStore((state) => state.scale);
   const { setCameraPosition, setOrbitTarget } = useCameraStore();
   const { addLog } = useLogStore();
-  const { camera } = useThree(); // 获取相机实例
 
   // Load texture with error handling
   const textureMap =
     showTexture && texture ? useLoader(TextureLoader, texture) : null;
 
   // Scale factor
-  const scale = 1 / 100;
   const scaledRadius = radius * scale > 1 ? radius * scale : 0.4;
 
   // Convert angles to radians
