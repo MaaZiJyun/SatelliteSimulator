@@ -1,0 +1,69 @@
+{
+  "stars": [],
+  "planets": [
+    {
+      "id": "1",
+      "name": "Earth",
+      "type": "planet",
+      "primary": "0",
+      "mass": 5.972e24,
+      "radius": 6371,
+      "initialState": {
+        "position": [0, 0, 0],
+        "velocity": [0, 0, 0]
+      },
+      "rotation": {
+        "obliquity": 23.44,
+        "initialMeridianAngle": 0,
+        "rotationPeriod": 86164,
+        "inclination": 0
+      },
+      "visual": {
+        "color": "#1a73e8",
+        "texture": "/textures/earth_daymap.jpg"
+      },
+      "groundStations": [
+        { "id": "2", "name": "Beijing", "lat": 39.9, "lon": 116.4, "alt": 43.5 }
+      ],
+      "observationPoints": [
+        {
+          "id": "3",
+          "name": "Observer1",
+          "lat": 39.9,
+          "lon": 116.4,
+          "alt": 43.5
+        }
+      ],
+      "emiMajorAxis": 149597870,
+      "eccentricity": 0.0167
+    }
+  ],
+  "naturalSatellites": [],
+  "artificialSatellites": [
+    {
+      "id": "5",
+      "name": "Hubble",
+      "type": "artificial-satellite",
+      "primary": "1",
+      "mass": 10,
+      "radius": 1,
+      "initialState": {
+        "position": [0, 0, 0],
+        "velocity": [0, 0, 0]
+      },
+      "rotation": {
+        "obliquity": 0,
+        "initialMeridianAngle": 0,
+        "rotationPeriod": 5400,
+        "inclination": 0
+      },
+      "visual": {
+        "color": "#ffcc00",
+        "wireframe": false,
+        "emissive": true
+      },
+      "emiMajorAxis": 6971,
+      "eccentricity": 0
+    }
+  ]
+}
