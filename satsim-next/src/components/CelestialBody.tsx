@@ -120,7 +120,7 @@ const CelestialBody = ({
         {showLabel && (
           <Html>
             <div
-              className="text-white text-sm bg-black/10 px-1 py-0.5 rounded cursor-pointer"
+              className="text-white text-sm bg-black/30 px-1 py-0.5 rounded cursor-pointer"
               onClick={handleTagClick}
             >
               {(name || "Unnamed").toUpperCase()}
@@ -152,7 +152,7 @@ const CelestialBody = ({
         {showLabel && (
           <Html>
             <div
-              className="text-white text-sm bg-black/10 px-1 py-0.5 rounded cursor-pointer"
+              className="text-white text-sm bg-black/30 px-1 py-0.5 rounded cursor-pointer"
               onClick={handleTagClick}
             >
               {(name || "Unnamed").toUpperCase()}
