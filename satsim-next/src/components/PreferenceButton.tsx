@@ -29,7 +29,7 @@ export default function PreferenceButton() {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-56 bg-black text-white border border-gray-500 z-10 p-4 space-y-2">
+        <div className="absolute right-0 mt-2 w-56 bg-black text-white border border-gray-500 z-50 p-4 space-y-2">
           <h3 className="font-semibold mb-2 text-center">Display Preference</h3>
 
           <div className="flex items-center justify-between text-sm">

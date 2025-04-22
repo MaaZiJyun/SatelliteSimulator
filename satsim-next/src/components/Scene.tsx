@@ -8,10 +8,11 @@ import * as THREE from "three";
 import CelestialBody from "./CelestialBody";
 import { usePreferenceStore } from "@/stores/preferenceStores";
 import Orbit from "./Orbit";
+import SmoothCameraPosition from "./SmoothCameraMover";
 
 function Scene() {
   const { data } = useStore();
-  const { cameraPosition, orbitTarget } = useCameraStore();
+  const { finalPosition, orbitTarget } = useCameraStore();
   const scale = 1 / 1000;
 
   const { showLabels, showOrbits, showTexture, showWareframe, showaxis } =
@@ -27,9 +28,10 @@ function Scene() {
   return (
     <Canvas shadows>
       <ambientLight intensity={0} />
+      <SmoothCameraPosition />
       <PerspectiveCamera
         makeDefault
-        position={cameraPosition}
+        position={finalPosition}
         fov={30}
         near={0.1}
         far={10000000}

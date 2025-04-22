@@ -1,5 +1,5 @@
 "use client";
-import { useFrame, useLoader } from "@react-three/fiber";
+import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import { TextureLoader } from "three";
@@ -51,6 +51,7 @@ const CelestialBody = ({
   const axisRef = useRef<THREE.Line>(null);
   const { setCameraPosition, setOrbitTarget } = useCameraStore();
   const { addLog } = useLogStore();
+  const { camera } = useThree(); // 获取相机实例
 
   // Load texture with error handling
   const textureMap =
@@ -68,10 +69,12 @@ const CelestialBody = ({
   const handleTagClick = () => {
     if (groupRef.current) {
       const targetPosition = groupRef.current.position.clone();
-      const offset = scaledRadius * 2; // Increased offset for better view
+      const offset = scaledRadius * 4; // Increased offset for better view
       targetPosition.z += offset;
-      setCameraPosition([targetPosition.x, targetPosition.y, targetPosition.z]);
-      setOrbitTarget(groupRef.current.position);
+      setCameraPosition(
+        new THREE.Vector3(targetPosition.x, targetPosition.y, targetPosition.z)
+      );
+      setOrbitTarget(groupRef.current.position.clone());
       addLog(`Teleported to ${name || "Unnamed"}`);
       addLog(
         `Position: ${targetPosition.x.toFixed(2)}, ${targetPosition.y.toFixed(
