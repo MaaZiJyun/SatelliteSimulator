@@ -54,9 +54,7 @@ export default function Orbit({
       return points;
     }
 
-    // ========================
     // 一般椭圆轨道处理（e ≠ 0）
-    // ========================
 
     const b = a * Math.sqrt(1 - e ** 2); // 半短轴
 

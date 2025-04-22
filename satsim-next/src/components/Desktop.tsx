@@ -10,7 +10,6 @@ import { useStore } from "@/stores/dataStores";
 import EditPanel from "./EditPanel";
 import Scene from "./Scene";
 
-
 export default function Desktop() {
   const { isFormOpen, selected, isDataEmpty } = useStore();
   return (
@@ -20,23 +19,25 @@ export default function Desktop() {
           <Topbar />
         </Panel>
         <PanelResizeHandle className="h-[2px] bg-gray-500 hover:bg-[#00ffff] cursor-row-resize" />
-        <Panel defaultSize={75}>
+        <Panel defaultSize={95}>
           <PanelGroup direction="horizontal">
-            <Panel defaultSize={15} maxSize={80}>
+            <Panel defaultSize={16} maxSize={80}>
               <Sidebar />
             </Panel>
             <PanelResizeHandle className="w-[2px] bg-gray-500 hover:bg-[#00ffff] cursor-col-resize" />
-            <Panel defaultSize={80}>
+            <Panel defaultSize={84}>
               <PanelGroup direction="vertical">
-                <Panel>
-                  {isDataEmpty() ? (
-                    <Beginning />
-                  ) : (
-                    <div className="h-full w-full flex items-center justify-center bg-black">
-                      <Scene />
-                    </div>
-                  )}
-                  {isFormOpen && <EditPanel />}
+                <Panel defaultSize={70}>
+                  <>
+                    {isDataEmpty() ? (
+                      <Beginning />
+                    ) : (
+                      <div className="h-full w-full flex items-center justify-center bg-black">
+                        <Scene />
+                      </div>
+                    )}
+                    {isFormOpen && <EditPanel />}
+                  </>
                 </Panel>
                 <PanelResizeHandle className="h-[2px] bg-gray-500 hover:bg-[#00ffff] cursor-row-resize" />
                 <Panel defaultSize={30} maxSize={80}>
