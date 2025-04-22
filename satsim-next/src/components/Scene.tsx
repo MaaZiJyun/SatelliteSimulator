@@ -75,7 +75,7 @@ function Scene() {
           emissive={body.visual.emissive}
           radius={body.radius}
           name={body.name}
-          wireframe={body.visual.texture ? false : true}
+          wireframe={body.visual.wireframe}
         />
       ))}
     </Canvas>

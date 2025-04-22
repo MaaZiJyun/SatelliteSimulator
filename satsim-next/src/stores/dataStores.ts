@@ -15,6 +15,7 @@ type Rotation = {
 };
 
 type Visual = {
+  wireframe: boolean | undefined;
   color: string;
   texture?: string;
   emissive?: boolean;
@@ -118,7 +119,8 @@ const defaultRotation: Rotation = {
 
 const defaultVisual: Visual = {
   color: "#ffffff",
-  emissive: false
+  emissive: false,
+  wireframe: false,
 };
 
 export const useStore = create<Store>((set, get) => ({

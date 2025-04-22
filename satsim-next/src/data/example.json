@@ -52,7 +52,7 @@
   "naturalSatellites": [
     {
       "name": "Moon",
-      "type": "n-sat",
+      "type": "natural-satellite",
       "primary": "Earth",
       "mass": 7.342e22,
       "radius": 1737.4,
@@ -74,7 +74,7 @@
   "artificialSatellites": [
     {
       "name": "Hubble",
-      "type": "a-sat",
+      "type": "artificial-satellite",
       "primary": "Earth",
       "mass": 10,
       "radius": 1,
@@ -90,7 +90,6 @@
       "visual": {
         "color": "#ffcc00",
         "wireframe": false
-        
       }
     }
   ]
