@@ -45,7 +45,7 @@ function Scene() {
         maxDistance={10000000}
       />
       <Stars
-        radius={10000000}
+        radius={1000000}
         depth={50}
         count={5000}
         factor={4}
