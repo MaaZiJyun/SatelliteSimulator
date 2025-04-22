@@ -9,6 +9,7 @@ type InitialState = {
 };
 
 type Rotation = {
+  inclination: number;
   obliquity: number;
   initialMeridianAngle: number;
   rotationPeriod: number;
@@ -47,6 +48,8 @@ type CelestialBodyBase = {
   initialState: InitialState;
   rotation: Rotation;
   visual: Visual;
+  emiMajorAxis?: number;
+  eccentricity?: number;
 };
 
 type Star = CelestialBodyBase & {
@@ -104,6 +107,7 @@ type Store = {
   deleteArtificialSatellite: (satId: string) => void;
 
   downloadDataAsJSON: () => void;
+  updatePosition: (positions: { [id: string]: [number, number, number] }) => void;
 };
 
 const defaultInitialState: InitialState = {
@@ -112,6 +116,7 @@ const defaultInitialState: InitialState = {
 };
 
 const defaultRotation: Rotation = {
+  inclination: 0,
   obliquity: 0,
   initialMeridianAngle: 0,
   rotationPeriod: 86400 // 1 day in seconds
@@ -466,5 +471,31 @@ export const useStore = create<Store>((set, get) => ({
     a.download = `celestial-data-${timestamp}.json`;
     a.click();
     URL.revokeObjectURL(url);
-  }
+  },
+
+  updatePosition: (positions: { [id: string]: [number, number, number] }) =>
+    set((state) => {
+      const updateBody = <T extends CelestialBodyBase>(bodies: T[]): T[] =>
+        bodies.map((body) => {
+          const newPos = positions[body.id.toString()];
+          if (!newPos) return body;
+          return {
+            ...body,
+            initialState: {
+              ...body.initialState,
+              position: newPos
+            }
+          };
+        });
+
+      return {
+        data: {
+          stars: updateBody(state.data.stars),
+          planets: updateBody(state.data.planets),
+          naturalSatellites: updateBody(state.data.naturalSatellites),
+          artificialSatellites: updateBody(state.data.artificialSatellites)
+        }
+      };
+    }),
+
 }));

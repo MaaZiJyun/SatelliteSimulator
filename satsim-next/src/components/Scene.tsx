@@ -6,11 +6,16 @@ import { useCameraStore } from "@/stores/cameraStores";
 import { useStore } from "@/stores/dataStores";
 import * as THREE from "three";
 import CelestialBody from "./CelestialBody";
+import { usePreferenceStore } from "@/stores/preferenceStores";
+import Orbit from "./Orbit";
 
 function Scene() {
   const { data } = useStore();
   const { cameraPosition, orbitTarget } = useCameraStore();
   const scale = 1 / 1000;
+
+  const { showLabels, showOrbits, showTexture, showWareframe, showaxis } =
+    usePreferenceStore();
 
   const allBodies = [
     ...data.stars,
@@ -25,7 +30,7 @@ function Scene() {
       <PerspectiveCamera
         makeDefault
         position={cameraPosition}
-        fov={60}
+        fov={30}
         near={0.1}
         far={10000000}
       />
@@ -75,9 +80,30 @@ function Scene() {
           emissive={body.visual.emissive}
           radius={body.radius}
           name={body.name}
-          wireframe={body.visual.wireframe}
+          wireframe={showWareframe}
+          showAxis={showaxis}
+          showLabel={showLabels}
+          showOrbit={showOrbits}
+          showTexture={showTexture}
         />
       ))}
+      {showOrbits &&
+        allBodies.map((body) => {
+          const parent = allBodies.find((b) => b.id === body.primary);
+          if (parent && body.emiMajorAxis && body.emiMajorAxis != 0) {
+            return (
+              <Orbit
+                key={body.id}
+                center={parent.initialState.position}
+                position={body.initialState.position}
+                semiMajorAxis={body.emiMajorAxis}
+                eccentricity={body.eccentricity ?? 0}
+                inclination={body.rotation.inclination}
+                color={body.visual.color}
+              />
+            );
+          }
+        })}
     </Canvas>
   );
 }

@@ -17,20 +17,14 @@ class InitialState(BaseModel):
 
 
 class Rotation(BaseModel):
+    inclination: float  # 轨道倾角
     obliquity: float  # 地轴倾角
     initialMeridianAngle: float  # 初始子午线角
     rotationPeriod: float  # 自转周期（单位秒）
 
 
-# class Visual(BaseModel):
-#     color: Optional[str]
-#     texture: Optional[str]
-#     emissive: Optional[bool] = False
-#     wireframe: Optional[bool] = False  # 添加这个字段
-
-
-
 class GroundStation(BaseModel):
+    id: str
     name: str
     lat: float
     lon: float
@@ -38,6 +32,7 @@ class GroundStation(BaseModel):
 
 
 class ObservationPoint(BaseModel):
+    id: str
     name: str
     lat: float
     lon: float
@@ -45,10 +40,13 @@ class ObservationPoint(BaseModel):
 
 
 class Body(BaseModel):
+    id: str
     name: str
     type: Literal["star", "planet", "satellite", "natural-satellite", "artificial-satellite"]
     mass: float
     radius: float
+    emiMajorAxis: float
+    eccentricity: float
     initialState: InitialState
     rotation: Rotation
     primary: Optional[str] = None  # 公转对象（如地球围绕 Sun）

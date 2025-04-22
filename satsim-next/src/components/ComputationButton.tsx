@@ -3,8 +3,8 @@ import { useStore } from "@/stores/dataStores";
 import { PlayIcon } from "@heroicons/react/24/outline";
 
 export default function ComputationButton() {
-  const { data, setData, isDataEmpty } = useStore();
-//   const setPositions = usePositionStore((state) => state.setPositions); // 提取 setter
+  const { data, setData, isDataEmpty, updatePosition } = useStore();
+  //   const setPositions = usePositionStore((state) => state.setPositions); // 提取 setter
 
   const handleCompute = async (mode: "heliocentric" | "geocentric") => {
     if (isDataEmpty()) {
@@ -25,12 +25,18 @@ export default function ComputationButton() {
       const result = await res.json();
 
       if (res.ok) {
-        const positions = result.result;
-        // setPositions(positions); // ✅ 更新位置状态
-        console.log("计算结果：", result);
-        console.log("计算结果：", JSON.stringify(result, null, 2));
+        if (result?.result) {
+          const positions = result.result;
+
+          console.log("计算成功，结果如下：", positions);
+          console.debug("完整结果对象：", JSON.stringify(result, null, 2));
+
+          updatePosition(positions); // 直接用就行
+        } else {
+          console.warn("接口响应成功，但结果为空：", result);
+        }
       } else {
-        console.error(result);
+        console.error("接口请求失败：", result);
       }
     } catch (err) {
       console.error(err);

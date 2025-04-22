@@ -10,7 +10,7 @@ type CameraStore = {
 
 export const useCameraStore = create<CameraStore>((set) => ({
     
-    cameraPosition: [0, 0, 10], // 初始摄像机位置
+    cameraPosition: [0, 0, 20000], // 初始摄像机位置
     orbitTarget: [0, 0, 0],     // 聚焦点
 
     setCameraPosition: (pos) => set({ cameraPosition: pos }),

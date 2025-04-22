@@ -196,7 +196,7 @@ export default function Sidebar() {
             onRemove={() => deleteStar(star.id)}
           >
             {(data.planets || [])
-              .filter((plt) => plt.primary === star.name)
+              .filter((plt) => plt.primary === star.id)
               .map((plt, pidx) => (
                 <SidebarSection
                   key={`plt-${pidx}`}
@@ -206,7 +206,7 @@ export default function Sidebar() {
                   onRemove={() => deletePlanet(plt.id)}
                 >
                   {(data.naturalSatellites || [])
-                    .filter((n) => n.primary === plt.name)
+                    .filter((n) => n.primary === plt.id)
                     .map((nsat, nidx) => (
                       <SidebarSection
                         key={`nsat-${nidx}`}
@@ -215,7 +215,7 @@ export default function Sidebar() {
                         onRemove={() => deleteNaturalSatellite(nsat.id)}
                       >
                         {(data.artificialSatellites || [])
-                          .filter((a) => a.primary === nsat.name)
+                          .filter((a) => a.primary === nsat.id)
                           .map((asat, aidx) => (
                             <SidebarItem
                               key={`asat-${aidx}`}
@@ -229,7 +229,7 @@ export default function Sidebar() {
                       </SidebarSection>
                     ))}
                   {(data.artificialSatellites || [])
-                    .filter((sat) => sat.primary === plt.name)
+                    .filter((sat) => sat.primary === plt.id)
                     .map((sat, sidx) => (
                       <SidebarItem
                         key={`sat-${sidx}`}

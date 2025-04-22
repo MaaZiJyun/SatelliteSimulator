@@ -8,6 +8,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useCameraStore } from "@/stores/cameraStores";
 import ComputationButton from "./ComputationButton";
+import PreferenceButton from "./PreferenceButton";
 
 export default function Terminal() {
   const logs = useLogStore((s) => s.logs);
@@ -46,9 +47,10 @@ export default function Terminal() {
               </div>
             </div>
           </button>
-          <button className="px-2 py-2 hover:text-[#00ffff] hover:cursor-pointer">
+          {/* <button className="px-2 py-2 hover:text-[#00ffff] hover:cursor-pointer">
             <Cog6ToothIcon className="h-5 w-5" />
-          </button>
+          </button> */}
+          <PreferenceButton />
           {/* <button
             onClick={() => setController(true)}
             className={`px-2 py-2 ${

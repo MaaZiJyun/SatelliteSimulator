@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { TextureLoader } from "three";
 import { useStore } from "@/stores/dataStores";
 import { useCameraStore } from "@/stores/cameraStores";
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLogStore } from "@/stores/logStores";
 import { add } from "three/tsl";
 
@@ -22,6 +22,10 @@ type CelestialBodyProps = {
   name: string;
   wireframe?: boolean;
   id?: string;
+  showAxis?: boolean;
+  showOrbit?: boolean;
+  showLabel?: boolean;
+  showTexture?: boolean;
 };
 
 const CelestialBody = ({
@@ -37,14 +41,20 @@ const CelestialBody = ({
   name,
   wireframe = false,
   id,
+  showAxis = false,
+  showOrbit = false,
+  showLabel = true,
+  showTexture = false,
 }: CelestialBodyProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
+  const axisRef = useRef<THREE.Line>(null);
   const { setCameraPosition, setOrbitTarget } = useCameraStore();
   const { addLog } = useLogStore();
 
   // Load texture with error handling
-  const textureMap = texture ? useLoader(TextureLoader, texture) : null;
+  const textureMap =
+    showTexture && texture ? useLoader(TextureLoader, texture) : null;
 
   // Scale factor
   const scale = 1 / 100;
@@ -71,6 +81,18 @@ const CelestialBody = ({
     }
   };
 
+  const axisLine = useMemo(() => {
+    const material = new THREE.LineBasicMaterial({ color: "white" });
+    const points = [
+      new THREE.Vector3(0, -scaledRadius * 2, 0),
+      new THREE.Vector3(0, scaledRadius * 2, 0),
+    ];
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const line = new THREE.Line(geometry, material);
+    line.rotation.x = obliquityRad;
+    return line;
+  }, [scaledRadius, obliquityRad]);
+
   if (emissive) {
     return (
       <group
@@ -92,14 +114,16 @@ const CelestialBody = ({
             toneMapped={textureMap ? true : false}
           />
         </mesh>
-        <Html>
-          <div
-            className="text-white text-sm bg-black/10 px-1 py-0.5 rounded cursor-pointer"
-            onClick={handleTagClick}
-          >
-            {(name || "Unnamed").toUpperCase()}
-          </div>
-        </Html>
+        {showLabel && (
+          <Html>
+            <div
+              className="text-white text-sm bg-black/10 px-1 py-0.5 rounded cursor-pointer"
+              onClick={handleTagClick}
+            >
+              {(name || "Unnamed").toUpperCase()}
+            </div>
+          </Html>
+        )}
       </group>
     );
   } else {
@@ -108,6 +132,7 @@ const CelestialBody = ({
         ref={groupRef}
         position={new THREE.Vector3(...initialPosition).multiplyScalar(scale)}
       >
+        {showAxis && <primitive object={axisLine} />}
         <mesh
           ref={meshRef}
           rotation={[obliquityRad, initialRotationAngleRad, 0]}
@@ -116,18 +141,21 @@ const CelestialBody = ({
           <sphereGeometry args={[scaledRadius, 64, 64]} />
           <meshStandardMaterial
             map={textureMap}
-            color={textureMap ? undefined : color || "#ffffff"}
+            color={(!textureMap && color) || "#ffffff"}
             wireframe={wireframe}
+            toneMapped={textureMap ? true : false}
           />
         </mesh>
-        <Html>
-          <div
-            className="select-none text-white text-sm bg-black/10 px-1 py-0.5 rounded cursor-pointer"
-            onClick={handleTagClick}
-          >
-            {(name || "Unnamed").toUpperCase()}
-          </div>
-        </Html>
+        {showLabel && (
+          <Html>
+            <div
+              className="text-white text-sm bg-black/10 px-1 py-0.5 rounded cursor-pointer"
+              onClick={handleTagClick}
+            >
+              {(name || "Unnamed").toUpperCase()}
+            </div>
+          </Html>
+        )}
       </group>
     );
   }

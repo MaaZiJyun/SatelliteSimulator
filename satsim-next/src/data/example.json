@@ -1,6 +1,7 @@
 {
   "stars": [
     {
+      "id": "0",
       "name": "Sun",
       "type": "star",
       "mass": 1.989e30,
@@ -12,86 +13,107 @@
       "rotation": {
         "obliquity": 7.25,
         "initialMeridianAngle": 0,
-        "rotationPeriod": 2160000
+        "rotationPeriod": 2160000,
+        "inclination": 0
       },
       "visual": {
         "color": "#ffff00",
         "texture": "/textures/sun_daymap.jpg",
         "emissive": true
-      }
+      },
+      "emiMajorAxis": 0,
+      "eccentricity": 0
     }
   ],
   "planets": [
     {
+      "id": "1",
       "name": "Earth",
       "type": "planet",
-      "primary": "Sun",
+      "primary": "0",
       "mass": 5.972e24,
       "radius": 6371,
       "initialState": {
-        "position": [149597870, 0, 0],
-        "velocity": [0, 29.78, 0]
+        "position": [0, 0, 0],
+        "velocity": [0, 0, 0]
       },
       "rotation": {
         "obliquity": 23.44,
         "initialMeridianAngle": 0,
-        "rotationPeriod": 86164
+        "rotationPeriod": 86164,
+        "inclination": 0
       },
       "visual": {
         "color": "#1a73e8",
         "texture": "/textures/earth_daymap.jpg"
       },
       "groundStations": [
-        { "name": "Beijing", "lat": 39.9, "lon": 116.4, "alt": 43.5 }
+        { "id": "2", "name": "Beijing", "lat": 39.9, "lon": 116.4, "alt": 43.5 }
       ],
       "observationPoints": [
-        { "name": "Observer1", "lat": 39.9, "lon": 116.4, "alt": 43.5 }
-      ]
+        {
+          "id": "3",
+          "name": "Observer1",
+          "lat": 39.9,
+          "lon": 116.4,
+          "alt": 43.5
+        }
+      ],
+      "emiMajorAxis": 149597870,
+      "eccentricity": 0.0167
     }
   ],
   "naturalSatellites": [
     {
+      "id": "4",
       "name": "Moon",
       "type": "natural-satellite",
-      "primary": "Earth",
+      "primary": "1",
       "mass": 7.342e22,
       "radius": 1737.4,
       "initialState": {
-        "position": [149989141, 0, 0],
-        "velocity": [0, 1.022, 0]
+        "position": [0, 0, 0],
+        "velocity": [0, 0, 0]
       },
       "rotation": {
         "obliquity": 6.68,
         "initialMeridianAngle": 0,
-        "rotationPeriod": 2360591
+        "rotationPeriod": 2360591,
+        "inclination": 5.14
       },
       "visual": {
         "color": "#cccccc",
         "texture": "/textures/moon_daymap.jpg"
-      }
+      },
+      "emiMajorAxis": 384400,
+      "eccentricity": 0.0549
     }
   ],
   "artificialSatellites": [
     {
+      "id": "5",
       "name": "Hubble",
       "type": "artificial-satellite",
-      "primary": "Earth",
+      "primary": "1",
       "mass": 10,
       "radius": 1,
       "initialState": {
-        "position": [149604941, 0, 0],
-        "velocity": [0, 7.12, 0]
+        "position": [0, 0, 0],
+        "velocity": [0, 0, 0]
       },
       "rotation": {
         "obliquity": 0,
         "initialMeridianAngle": 0,
-        "rotationPeriod": 5400
+        "rotationPeriod": 5400,
+        "inclination": 28.5
       },
       "visual": {
         "color": "#ffcc00",
         "wireframe": false,
         "emissive": true
-      }
+      },
+      "emiMajorAxis": 6971,
+      "eccentricity": 0
     }
   ]
 }
