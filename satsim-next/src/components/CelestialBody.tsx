@@ -58,7 +58,7 @@ const CelestialBody = ({
     showTexture && texture ? useLoader(TextureLoader, texture) : null;
 
   // Scale factor
-  const scaledRadius = radius * scale > 1 ? radius * scale : 0.4;
+  const scaledRadius = radius * scale > 0.1 ? radius * scale : 0.1;
 
   // Convert angles to radians
   const obliquityRad = THREE.MathUtils.degToRad(obliquity);
