@@ -86,6 +86,6 @@ def calc_position(
     return [
         float(central_position[0] + x),
         float(central_position[1] + y),
-        float(central_position[2] + z)
+        float(central_position[2] + z),
     ]
 

@@ -5,13 +5,14 @@ from utils.build_positions_recursive import build_positions_recursive
 
 
 def process_heliocentric_system(request: SolarSystemRequest) -> Dict[str, List[float]]:
-    system_data = request.data
+    data = request.data
+    time = request.t
 
     all_bodies: List[Body] = (
-        system_data.stars + 
-        system_data.planets + 
-        system_data.naturalSatellites + 
-        system_data.artificialSatellites
+        data.stars + 
+        data.planets + 
+        data.naturalSatellites + 
+        data.artificialSatellites
     )
 
     # 建立映射
@@ -25,10 +26,10 @@ def process_heliocentric_system(request: SolarSystemRequest) -> Dict[str, List[f
         raise ValueError("No root body found (must have a body with no primary).")
 
     # root 本身位置就是绝对位置
-    id_to_position[root.id] = root.initialState.position
+    id_to_position[root.id] = root.state.position
 
     # 开始递归计算所有附属天体位置
-    build_positions_recursive(root.id, id_to_body, id_to_position)
+    build_positions_recursive(root.id, id_to_body, id_to_position, time)
     # print(f"Root Body ID: {root.id}, Position: {id_to_position[root.id]}")
 
     return id_to_position

@@ -3,23 +3,39 @@ import { nanoid } from "nanoid";
 
 type Vector3 = [number, number, number];
 
-type InitialState = {
+
+type Physical = {
+  mass: number;
+  radius: number;
+};
+
+type State = {
   position: Vector3;
   velocity: Vector3;
 };
 
 type Rotation = {
-  inclination: number;
+  period: number; // JSON中是 period，不是 rotationPeriod
   obliquity: number;
   initialMeridianAngle: number;
-  rotationPeriod: number;
+  progradeDirection: boolean;
 };
 
 type Visual = {
-  wireframe: boolean | undefined;
   color: string;
   texture?: string;
   emissive?: boolean;
+  wireframe: boolean;
+};
+
+type Orbit = {
+  semiMajorAxis: number;
+  eccentricity: number;
+  inclination: number;
+  longitudeOfAscendingNode: number;
+  argumentOfPeriapsis: number;
+  meanAnomalyAtEpoch: number;
+  epoch: string;
 };
 
 type GroundStation = {
@@ -38,37 +54,40 @@ type ObservationPoint = {
   alt: number;
 };
 
-type CelestialBodyBase = {
+type BaseBody = {
   id: string;
   name: string;
-  type: string;
-  primary: string | null;
-  mass: number;
-  radius: number;
-  initialState: InitialState;
+  type: 'star' | 'planet' | 'natural-satellite' | 'artificial-satellite';
+  physical: Physical;
+  state: State;
   rotation: Rotation;
   visual: Visual;
-  emiMajorAxis?: number;
-  eccentricity?: number;
 };
 
-type Star = CelestialBodyBase & {
-  type: "star";
-  primary: null;
+type Star = BaseBody & {
+  type: 'star';
+  primary: string | null;
+  orbit: Orbit;
 };
 
-type Planet = CelestialBodyBase & {
-  type: "planet";
+type Planet = BaseBody & {
+  type: 'planet';
+  primary: string;
+  orbit: Orbit;
   groundStations: GroundStation[];
   observationPoints: ObservationPoint[];
 };
 
-type NaturalSatellite = CelestialBodyBase & {
-  type: "natural-satellite";
+type NaturalSatellite = BaseBody & {
+  type: 'natural-satellite';
+  primary: string;
+  orbit: Orbit;
 };
 
-type ArtificialSatellite = CelestialBodyBase & {
-  type: "artificial-satellite";
+type ArtificialSatellite = BaseBody & {
+  type: 'artificial-satellite';
+  primary: string;
+  orbit: Orbit;
 };
 
 type Data = {
@@ -82,6 +101,9 @@ type Store = {
   data: Data;
   selected: any | null;
   isFormOpen: boolean;
+
+  getXZY: (pos: Vector3) => Vector3;
+
   setData: (data: Data) => void;
   setSelected: (item: any) => void;
   setIsFormOpen: (open: boolean) => void;
@@ -110,21 +132,10 @@ type Store = {
   updatePosition: (positions: { [id: string]: [number, number, number] }) => void;
 };
 
-const defaultInitialState: InitialState = {
-  position: [0, 0, 0],
-  velocity: [0, 0, 0]
-};
-
-const defaultRotation: Rotation = {
-  inclination: 0,
-  obliquity: 0,
-  initialMeridianAngle: 0,
-  rotationPeriod: 86400 // 1 day in seconds
-};
-
 const defaultVisual: Visual = {
-  color: "#ffffff",
-  emissive: false,
+  color: '#aaaaaa',
+  texture: '',
+  emissive: true,
   wireframe: false,
 };
 
@@ -135,41 +146,40 @@ export const useStore = create<Store>((set, get) => ({
     naturalSatellites: [],
     artificialSatellites: []
   },
+
   selected: null,
   isFormOpen: false,
 
-  // setData: (data) => set({ data }),
-  setData: (data) => {
+  getXZY: (pos) => {
+    const x = pos[0];
+    const y = pos[1];
+    const z = pos[2];
+    return [x, z, y] as Vector3;
+  },
+
+  setData: (incomingData) => {
+    const ensureId = <T extends { id?: string }>(item: T): T => ({
+      ...item,
+      id: item.id || nanoid(),
+    });
+
     const updatedData: Data = {
-      stars: data.stars.map(star => ({
-        ...star,
-        id: star.id || nanoid()
+      stars: incomingData.stars.map(ensureId),
+      planets: incomingData.planets.map((planet) => ({
+        ...ensureId(planet),
+        groundStations: planet.groundStations.map(ensureId),
+        observationPoints: planet.observationPoints.map(ensureId),
       })),
-      planets: data.planets.map(planet => ({
-        ...planet,
-        id: planet.id || nanoid(),
-        groundStations: planet.groundStations.map(gs => ({
-          ...gs,
-          id: gs.id || nanoid()
-        })),
-        observationPoints: planet.observationPoints.map(op => ({
-          ...op,
-          id: op.id || nanoid()
-        }))
-      })),
-      naturalSatellites: data.naturalSatellites.map(sat => ({
-        ...sat,
-        id: sat.id || nanoid()
-      })),
-      artificialSatellites: data.artificialSatellites.map(sat => ({
-        ...sat,
-        id: sat.id || nanoid()
-      }))
+      naturalSatellites: incomingData.naturalSatellites.map(ensureId),
+      artificialSatellites: incomingData.artificialSatellites.map(ensureId),
     };
+
     set({ data: updatedData });
   },
+
   setSelected: (item) => set({ selected: item }),
   setIsFormOpen: (open) => set({ isFormOpen: open }),
+  // Check if data is empty
   isDataEmpty: () => {
     const { data } = get();
     return (
@@ -188,21 +198,30 @@ export const useStore = create<Store>((set, get) => ({
           ...state.data.stars,
           {
             id: nanoid(),
-            type: "star",
-            name: "New Star",
-            primary: null,
-            mass: 1.989e30,
-            radius: 696340,
-            initialState: defaultInitialState,
-            rotation: defaultRotation,
-            visual: {
-              ...defaultVisual,
-              color: "#ffff00",
-              emissive: true
-            }
-          }
-        ]
-      }
+            name: 'New Star',
+            type: 'star',
+            primary: null, // Example primary value
+            orbit: {
+              semiMajorAxis: 1e11,
+              eccentricity: 0.1,
+              inclination: 0,
+              longitudeOfAscendingNode: 0,
+              argumentOfPeriapsis: 0,
+              meanAnomalyAtEpoch: 0,
+              epoch: new Date().toISOString(),
+            },
+            physical: { mass: 1e30, radius: 100000 },
+            state: { position: [0, 0, 0], velocity: [0, 0, 0] },
+            rotation: {
+              period: 1000000,
+              obliquity: 0,
+              initialMeridianAngle: 0,
+              progradeDirection: true,
+            },
+            visual: defaultVisual,
+          },
+        ],
+      },
     })),
 
   deleteStar: (starId) =>
@@ -215,7 +234,7 @@ export const useStore = create<Store>((set, get) => ({
 
   addPlanet: () =>
     set((state) => {
-      const sun = state.data.stars.find(s => s.type === "star");
+      const primary = state.data.stars[0]?.id ?? 'sun';
       return {
         data: {
           ...state.data,
@@ -223,22 +242,32 @@ export const useStore = create<Store>((set, get) => ({
             ...state.data.planets,
             {
               id: nanoid(),
-              type: "planet",
-              name: "New Planet",
-              primary: sun ? sun.id : null,
-              mass: 5.972e24,
-              radius: 6371,
-              initialState: defaultInitialState,
-              rotation: defaultRotation,
-              visual: {
-                ...defaultVisual,
-                color: "#1a73e8"
+              name: 'New Planet',
+              type: 'planet',
+              primary,
+              physical: { mass: 1e24, radius: 6000 },
+              state: { position: [0, 0, 0], velocity: [0, 0, 0] },
+              rotation: {
+                period: 86400,
+                obliquity: 0,
+                initialMeridianAngle: 0,
+                progradeDirection: true,
               },
+              orbit: {
+                semiMajorAxis: 1e8,
+                eccentricity: 0,
+                inclination: 0,
+                longitudeOfAscendingNode: 0,
+                argumentOfPeriapsis: 0,
+                meanAnomalyAtEpoch: 0,
+                epoch: new Date().toISOString(),
+              },
+              visual: defaultVisual,
               groundStations: [],
-              observationPoints: []
-            }
-          ]
-        }
+              observationPoints: [],
+            },
+          ],
+        },
       };
     }),
 
@@ -334,7 +363,7 @@ export const useStore = create<Store>((set, get) => ({
 
   addNaturalSatellite: () =>
     set((state) => {
-      const earth = state.data.planets.find(p => p.name === "Earth");
+      const primary = state.data.planets[0]?.id ?? 'earth';
       return {
         data: {
           ...state.data,
@@ -342,20 +371,30 @@ export const useStore = create<Store>((set, get) => ({
             ...state.data.naturalSatellites,
             {
               id: nanoid(),
-              type: "natural-satellite",
-              name: "New Moon",
-              primary: earth ? earth.id : null,
-              mass: 7.342e22,
-              radius: 1737,
-              initialState: defaultInitialState,
-              rotation: defaultRotation,
-              visual: {
-                ...defaultVisual,
-                color: "#cccccc"
-              }
-            }
-          ]
-        }
+              name: 'New Moon',
+              type: 'natural-satellite',
+              primary,
+              physical: { mass: 1e22, radius: 1700 },
+              state: { position: [0, 0, 0], velocity: [0, 0, 0] },
+              rotation: {
+                period: 1000000,
+                obliquity: 0,
+                initialMeridianAngle: 0,
+                progradeDirection: true,
+              },
+              orbit: {
+                semiMajorAxis: 400000,
+                eccentricity: 0,
+                inclination: 0,
+                longitudeOfAscendingNode: 0,
+                argumentOfPeriapsis: 0,
+                meanAnomalyAtEpoch: 0,
+                epoch: new Date().toISOString(),
+              },
+              visual: defaultVisual,
+            },
+          ],
+        },
       };
     }),
 
@@ -371,7 +410,7 @@ export const useStore = create<Store>((set, get) => ({
 
   addArtificialSatellite: () =>
     set((state) => {
-      const earth = state.data.planets.find(p => p.name === "Earth");
+      const primary = state.data.planets[0]?.id ?? 'earth';
       return {
         data: {
           ...state.data,
@@ -379,20 +418,30 @@ export const useStore = create<Store>((set, get) => ({
             ...state.data.artificialSatellites,
             {
               id: nanoid(),
-              type: "artificial-satellite",
-              name: "New Satellite",
-              primary: earth ? earth.id : null,
-              mass: 1000,
-              radius: 5,
-              initialState: defaultInitialState,
-              rotation: defaultRotation,
-              visual: {
-                ...defaultVisual,
-                color: "#ffcc00"
-              }
-            }
-          ]
-        }
+              name: 'New Satellite',
+              type: 'artificial-satellite',
+              primary,
+              physical: { mass: 1000, radius: 1 },
+              state: { position: [0, 0, 0], velocity: [0, 0, 0] },
+              rotation: {
+                period: 5400,
+                obliquity: 0,
+                initialMeridianAngle: 0,
+                progradeDirection: true,
+              },
+              orbit: {
+                semiMajorAxis: 7000,
+                eccentricity: 0,
+                inclination: 0,
+                longitudeOfAscendingNode: 0,
+                argumentOfPeriapsis: 0,
+                meanAnomalyAtEpoch: 0,
+                epoch: new Date().toISOString(),
+              },
+              visual: defaultVisual,
+            },
+          ],
+        },
       };
     }),
 
@@ -407,95 +456,50 @@ export const useStore = create<Store>((set, get) => ({
     })),
 
   downloadDataAsJSON: () => {
-    const { data } = get();
-    const jsonData = {
-      stars: data.stars.map(star => ({
-        name: star.name,
-        type: star.type,
-        mass: star.mass,
-        radius: star.radius,
-        initialState: star.initialState,
-        rotation: star.rotation,
-        visual: star.visual
-      })),
-      planets: data.planets.map(planet => ({
-        name: planet.name,
-        type: planet.type,
-        primary: planet.primary,
-        mass: planet.mass,
-        radius: planet.radius,
-        initialState: planet.initialState,
-        rotation: planet.rotation,
-        visual: planet.visual,
-        groundStations: planet.groundStations.map(gs => ({
-          name: gs.name,
-          lat: gs.lat,
-          lon: gs.lon,
-          alt: gs.alt
-        })),
-        observationPoints: planet.observationPoints.map(op => ({
-          name: op.name,
-          lat: op.lat,
-          lon: op.lon,
-          alt: op.alt
-        }))
-      })),
-      naturalSatellites: data.naturalSatellites.map(sat => ({
-        name: sat.name,
-        type: sat.type,
-        primary: sat.primary,
-        mass: sat.mass,
-        radius: sat.radius,
-        initialState: sat.initialState,
-        rotation: sat.rotation,
-        visual: sat.visual
-      })),
-      artificialSatellites: data.artificialSatellites.map(sat => ({
-        name: sat.name,
-        type: sat.type,
-        primary: sat.primary,
-        mass: sat.mass,
-        radius: sat.radius,
-        initialState: sat.initialState,
-        rotation: sat.rotation,
-        visual: sat.visual
-      }))
-    };
-
-    const json = JSON.stringify(jsonData, null, 2);
-    const blob = new Blob([json], { type: "application/json" });
+    const data = get().data;
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const a = document.createElement('a');
     a.href = url;
-    a.download = `celestial-data-${timestamp}.json`;
+    a.download = 'space_data.json';
     a.click();
     URL.revokeObjectURL(url);
   },
 
-  updatePosition: (positions: { [id: string]: [number, number, number] }) =>
-    set((state) => {
-      const updateBody = <T extends CelestialBodyBase>(bodies: T[]): T[] =>
-        bodies.map((body) => {
-          const newPos = positions[body.id.toString()];
-          if (!newPos) return body;
-          return {
-            ...body,
-            initialState: {
-              ...body.initialState,
-              position: newPos
-            }
-          };
-        });
+  updatePosition: (positions) =>
+    set((state) => ({
+      data: {
+        ...state.data,
+        stars: state.data.stars.map((star) => ({
+          ...star,
+          state: {
+            ...star.state,
+            position: positions[star.id] || star.state.position,
+          },
+        })),
+        planets: state.data.planets.map((planet) => ({
+          ...planet,
+          state: {
+            ...planet.state,
+            position: positions[planet.id] || planet.state.position,
+          },
+        })),
+        naturalSatellites: state.data.naturalSatellites.map((sat) => ({
+          ...sat,
+          state: {
+            ...sat.state,
+            position: positions[sat.id] || sat.state.position,
+          },
+        })),
+        artificialSatellites: state.data.artificialSatellites.map((sat) => ({
+          ...sat,
+          state: {
+            ...sat.state,
+            position: positions[sat.id] || sat.state.position,
+          },
+        })),
+      },
+    })),
 
-      return {
-        data: {
-          stars: updateBody(state.data.stars),
-          planets: updateBody(state.data.planets),
-          naturalSatellites: updateBody(state.data.naturalSatellites),
-          artificialSatellites: updateBody(state.data.artificialSatellites)
-        }
-      };
-    }),
 
 }));

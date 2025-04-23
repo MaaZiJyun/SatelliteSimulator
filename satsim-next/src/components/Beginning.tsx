@@ -15,6 +15,7 @@ export default function Beginning() {
       addLog(`File loaded: ${file.name}`);
       setError(null); // 清除错误
     } catch (err) {
+      console.error("Invalid JSON file", err);
       addLog(`Invalid JSON file: ${err}`);
       setError("Invalid JSON file");
     }

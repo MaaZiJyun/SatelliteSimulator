@@ -4,15 +4,14 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera, Stars } from "@react-three/drei";
 import { useCameraStore } from "@/stores/cameraStores";
 import { useStore } from "@/stores/dataStores";
-import * as THREE from "three";
 import CelestialBody from "./CelestialBody";
 import { usePreferenceStore } from "@/stores/preferenceStores";
-import Orbit from "./Orbit";
 import SmoothCameraPosition from "./SmoothCameraMover";
 import CameraTracker from "./CameraTracker";
+import OrbitStatic from "./OrbitStatic";
 
 function Scene() {
-  const { data } = useStore();
+  const { data, getXZY } = useStore();
   const { finalPosition, orbitTarget } = useCameraStore();
   const scale = usePreferenceStore((state) => state.scale);
 
@@ -28,7 +27,7 @@ function Scene() {
 
   return (
     <Canvas shadows>
-      <ambientLight intensity={0} />
+      <ambientLight intensity={5} />
       <CameraTracker />
       <SmoothCameraPosition />
       <PerspectiveCamera
@@ -74,15 +73,15 @@ function Scene() {
         <CelestialBody
           key={body.id}
           id={body.id}
-          position={body.initialState.position}
-          velocity={body.initialState.velocity}
+          position={getXZY(body.state.position)}
+          velocity={body.state.velocity}
           obliquity={body.rotation.obliquity}
           rotationAngle={body.rotation.initialMeridianAngle}
-          rotationPeriod={body.rotation.rotationPeriod}
+          rotationPeriod={body.rotation.period}
           color={body.visual.color}
           texture={body.visual.texture ? body.visual.texture : undefined}
           emissive={body.visual.emissive}
-          radius={body.radius}
+          radius={body.physical.radius}
           name={body.name}
           wireframe={showWareframe}
           showAxis={showaxis}
@@ -94,15 +93,20 @@ function Scene() {
       {showOrbits &&
         allBodies.map((body) => {
           const parent = allBodies.find((b) => b.id === body.primary);
-          if (parent && body.emiMajorAxis && body.emiMajorAxis != 0) {
+          if (
+            parent &&
+            body.orbit.semiMajorAxis &&
+            body.orbit.semiMajorAxis != 0
+          ) {
             return (
-              <Orbit
+              <OrbitStatic
                 key={body.id}
-                center={parent.initialState.position}
-                position={body.initialState.position}
-                semiMajorAxis={body.emiMajorAxis}
-                eccentricity={body.eccentricity ?? 0}
-                inclination={body.rotation.inclination}
+                centerPosition={getXZY(parent.state.position)}
+                semiMajorAxis={body.orbit.semiMajorAxis}
+                eccentricity={body.orbit.eccentricity ?? 0}
+                inclination={body.orbit.inclination}
+                ascendingNode={body.orbit.longitudeOfAscendingNode}
+                argOfPeriapsis={body.orbit.argumentOfPeriapsis}
                 color={body.visual.color}
               />
             );

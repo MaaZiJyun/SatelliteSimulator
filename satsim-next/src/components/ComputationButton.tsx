@@ -1,10 +1,10 @@
+"use client";
+
 import { useStore } from "@/stores/dataStores";
-// import { usePositionStore } from "@/stores/positionStore";
 import { PlayIcon } from "@heroicons/react/24/outline";
 
 export default function ComputationButton() {
-  const { data, setData, isDataEmpty, updatePosition } = useStore();
-  //   const setPositions = usePositionStore((state) => state.setPositions); // 提取 setter
+  const { data, isDataEmpty, updatePosition } = useStore();
 
   const handleCompute = async (mode: "heliocentric" | "geocentric") => {
     if (isDataEmpty()) {
@@ -12,35 +12,44 @@ export default function ComputationButton() {
       return;
     }
 
-    try {
-      const body = JSON.stringify({ data: data, mode: mode });
-      console.log("请求体：", body);
+    let t = 0;
 
-      const res = await fetch("/api/compute", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: body,
-      });
-
-      const result = await res.json();
-
-      if (res.ok) {
-        if (result?.result) {
-          const positions = result.result;
-
-          console.log("计算成功，结果如下：", positions);
-          console.debug("完整结果对象：", JSON.stringify(result, null, 2));
-
-          updatePosition(positions); // 直接用就行
-        } else {
-          console.warn("接口响应成功，但结果为空：", result);
-        }
-      } else {
-        console.error("接口请求失败：", result);
+    const runStep = async (count: number) => {
+      if (count >= 10) {
+        console.log("已完成10次请求");
+        return;
       }
-    } catch (err) {
-      console.error(err);
-    }
+
+      try {
+        const body = JSON.stringify({ data, mode, t });
+        const res = await fetch("/api/compute", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body,
+        });
+
+        const result = await res.json();
+
+        if (res.ok) {
+          if (result?.result) {
+            console.log(`第 ${count + 1} 次结果 (t=${t})：`, result.result);
+            updatePosition(result.result);
+          } else {
+            console.warn(`第 ${count + 1} 次 (t=${t})：接口响应成功，但结果为空`);
+          }
+        } else {
+          console.error(`第 ${count + 1} 次 (t=${t})：接口请求失败`, result);
+        }
+      } catch (err) {
+        console.error(`第 ${count + 1} 次 (t=${t}) 请求出错：`, err);
+      }
+
+      // 下一轮：延时 0.1 秒
+      setTimeout(() => runStep(count + 1), 50);
+      t += 100000;
+    };
+
+    runStep(0);
   };
 
   return (
