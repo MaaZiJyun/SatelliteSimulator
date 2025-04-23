@@ -12,7 +12,7 @@ export const useLogStore = create<LogState>((set) => ({
     setLog: (logs) => set({ logs }),
     addLog: (log) =>
         set((state) => ({
-            logs: [...state.logs, `${formatDate(new Date())} - ${log}`.toUpperCase()].reverse(), // 在现有logs后添加新log
+            logs: [...state.logs, `${formatDate(new Date())} - ${log}`.toUpperCase()], // 在现有logs后添加新log
         })),
     reset: () => set({ logs: [] }),
 }));
