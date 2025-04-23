@@ -1,147 +1,397 @@
 {
-    "stars": [
-      {
-        "id": "sun",
-        "name": "Sun",
-        "type": "star",
-        "physical": {
-          "mass": 1.989e30,
-          "radius": 696340
-        },
-        "state": {
-          "position": [0, 0, 0],
-          "velocity": [0, 0, 0]
-        },
-        "rotation": {
-          "period": 2160000,
-          "obliquity": 7.25,
-          "initialMeridianAngle": 0,
-          "progradeDirection": true
-        },
-        "visual": {
-          "color": "#ffff00",
-          "texture": "/textures/sun_daymap.jpg",
-          "emissive": true
+  "stars": [
+    {
+      "id": "sun",
+      "name": "Sun",
+      "type": "star",
+      "physical": {
+        "mass": 1.989e30,
+        "radius": 696340
+      },
+      "state": {
+        "position": [0, 0, 0],
+        "velocity": [0, 0, 0]
+      },
+      "rotation": {
+        "period": 2160000,
+        "obliquity": 7.25,
+        "initialMeridianAngle": 0,
+        "progradeDirection": true
+      },
+      "visual": {
+        "color": "#ffff00",
+        "texture": "/textures/sun_daymap.jpg",
+        "emissive": true
+      }
+    }
+  ],
+  "planets": [
+    {
+      "id": "mercury",
+      "name": "Mercury",
+      "type": "planet",
+      "primary": "sun",
+      "physical": {
+        "mass": 3.3011e23,
+        "radius": 2439.7
+      },
+      "state": {
+        "position": [0, 0, 0],
+        "velocity": [0, 0, 0]
+      },
+      "rotation": {
+        "period": 5067032,
+        "obliquity": 0.034,
+        "initialMeridianAngle": 0,
+        "progradeDirection": true
+      },
+      "orbit": {
+        "semiMajorAxis": 57909227,
+        "eccentricity": 0.2056,
+        "inclination": 7.005,
+        "longitudeOfAscendingNode": 48.331,
+        "argumentOfPeriapsis": 29.124,
+        "meanAnomalyAtEpoch": 174.796,
+        "epoch": "2025-01-01T00:00:00Z"
+      },
+      "visual": {
+        "color": "#a9a9a9",
+        "texture": "/textures/mercury.jpg"
+      },
+      "groundStations": [],
+      "observationPoints": []
+    },
+    {
+      "id": "venus",
+      "name": "Venus",
+      "type": "planet",
+      "primary": "sun",
+      "physical": {
+        "mass": 4.8675e24,
+        "radius": 6051.8
+      },
+      "state": {
+        "position": [0, 0, 0],
+        "velocity": [0, 0, 0]
+      },
+      "rotation": {
+        "period": -20996760,
+        "obliquity": 177.36,
+        "initialMeridianAngle": 0,
+        "progradeDirection": false
+      },
+      "orbit": {
+        "semiMajorAxis": 108209475,
+        "eccentricity": 0.0067,
+        "inclination": 3.3947,
+        "longitudeOfAscendingNode": 76.68,
+        "argumentOfPeriapsis": 54.884,
+        "meanAnomalyAtEpoch": 50.115,
+        "epoch": "2025-01-01T00:00:00Z"
+      },
+      "visual": {
+        "color": "#f5deb3",
+        "texture": "/textures/venus.jpg"
+      },
+      "groundStations": [],
+      "observationPoints": []
+    },
+    {
+      "id": "mars",
+      "name": "Mars",
+      "type": "planet",
+      "primary": "sun",
+      "physical": {
+        "mass": 6.4171e23,
+        "radius": 3389.5
+      },
+      "state": {
+        "position": [0, 0, 0],
+        "velocity": [0, 0, 0]
+      },
+      "rotation": {
+        "period": 88642,
+        "obliquity": 25.19,
+        "initialMeridianAngle": 0,
+        "progradeDirection": true
+      },
+      "orbit": {
+        "semiMajorAxis": 227943824,
+        "eccentricity": 0.0934,
+        "inclination": 1.85,
+        "longitudeOfAscendingNode": 49.578,
+        "argumentOfPeriapsis": 286.502,
+        "meanAnomalyAtEpoch": 19.373,
+        "epoch": "2025-01-01T00:00:00Z"
+      },
+      "visual": {
+        "color": "#c1440e",
+        "texture": "/textures/mars.jpg"
+      },
+      "groundStations": [],
+      "observationPoints": []
+    },
+    {
+      "id": "jupiter",
+      "name": "Jupiter",
+      "type": "planet",
+      "primary": "sun",
+      "physical": {
+        "mass": 1.8982e27,
+        "radius": 69911
+      },
+      "state": {
+        "position": [0, 0, 0],
+        "velocity": [0, 0, 0]
+      },
+      "rotation": {
+        "period": 35730,
+        "obliquity": 3.13,
+        "initialMeridianAngle": 0,
+        "progradeDirection": true
+      },
+      "orbit": {
+        "semiMajorAxis": 778340821,
+        "eccentricity": 0.0489,
+        "inclination": 1.303,
+        "longitudeOfAscendingNode": 100.464,
+        "argumentOfPeriapsis": 273.867,
+        "meanAnomalyAtEpoch": 20.02,
+        "epoch": "2025-01-01T00:00:00Z"
+      },
+      "visual": {
+        "color": "#d9a066",
+        "texture": "/textures/jupiter.jpg"
+      },
+      "groundStations": [],
+      "observationPoints": []
+    },
+    {
+      "id": "saturn",
+      "name": "Saturn",
+      "type": "planet",
+      "primary": "sun",
+      "physical": {
+        "mass": 5.6834e26,
+        "radius": 58232
+      },
+      "state": {
+        "position": [0, 0, 0],
+        "velocity": [0, 0, 0]
+      },
+      "rotation": {
+        "period": 38016,
+        "obliquity": 26.73,
+        "initialMeridianAngle": 0,
+        "progradeDirection": true
+      },
+      "orbit": {
+        "semiMajorAxis": 1426666422,
+        "eccentricity": 0.0565,
+        "inclination": 2.485,
+        "longitudeOfAscendingNode": 113.665,
+        "argumentOfPeriapsis": 339.392,
+        "meanAnomalyAtEpoch": 317.02,
+        "epoch": "2025-01-01T00:00:00Z"
+      },
+      "visual": {
+        "color": "#f5d76e",
+        "texture": "/textures/saturn.jpg"
+      },
+      "groundStations": [],
+      "observationPoints": []
+    },
+    {
+      "id": "uranus",
+      "name": "Uranus",
+      "type": "planet",
+      "primary": "sun",
+      "physical": {
+        "mass": 8.681e25,
+        "radius": 25362
+      },
+      "state": {
+        "position": [0, 0, 0],
+        "velocity": [0, 0, 0]
+      },
+      "rotation": {
+        "period": -62064,
+        "obliquity": 97.77,
+        "initialMeridianAngle": 0,
+        "progradeDirection": false
+      },
+      "orbit": {
+        "semiMajorAxis": 2870658186,
+        "eccentricity": 0.0463,
+        "inclination": 0.773,
+        "longitudeOfAscendingNode": 74.006,
+        "argumentOfPeriapsis": 96.998,
+        "meanAnomalyAtEpoch": 142.238,
+        "epoch": "2025-01-01T00:00:00Z"
+      },
+      "visual": {
+        "color": "#7fffd4",
+        "texture": "/textures/uranus.jpg"
+      },
+      "groundStations": [],
+      "observationPoints": []
+    },
+    {
+      "id": "neptune",
+      "name": "Neptune",
+      "type": "planet",
+      "primary": "sun",
+      "physical": {
+        "mass": 1.02413e26,
+        "radius": 24622
+      },
+      "state": {
+        "position": [0, 0, 0],
+        "velocity": [0, 0, 0]
+      },
+      "rotation": {
+        "period": 57996,
+        "obliquity": 28.32,
+        "initialMeridianAngle": 0,
+        "progradeDirection": true
+      },
+      "orbit": {
+        "semiMajorAxis": 4498396441,
+        "eccentricity": 0.0097,
+        "inclination": 1.77,
+        "longitudeOfAscendingNode": 131.784,
+        "argumentOfPeriapsis": 273.187,
+        "meanAnomalyAtEpoch": 256.228,
+        "epoch": "2025-01-01T00:00:00Z"
+      },
+      "visual": {
+        "color": "#4169e1",
+        "texture": "/textures/neptune.jpg"
+      },
+      "groundStations": [],
+      "observationPoints": []
+    },
+    {
+      "id": "earth",
+      "name": "Earth",
+      "type": "planet",
+      "primary": "sun",
+      "physical": {
+        "mass": 5.972e24,
+        "radius": 6371
+      },
+      "state": {
+        "position": [0, 0, 0],
+        "velocity": [0, 0, 0]
+      },
+      "rotation": {
+        "period": 86164,
+        "obliquity": 23.44,
+        "initialMeridianAngle": 0,
+        "progradeDirection": true
+      },
+      "orbit": {
+        "semiMajorAxis": 149597870,
+        "eccentricity": 0.0167,
+        "inclination": 0,
+        "longitudeOfAscendingNode": 0,
+        "argumentOfPeriapsis": 0,
+        "meanAnomalyAtEpoch": 0,
+        "epoch": "2025-01-01T00:00:00Z"
+      },
+      "visual": {
+        "color": "#1a73e8",
+        "texture": "/textures/earth_daymap.jpg"
+      },
+      "groundStations": [
+        {
+          "id": "beijing",
+          "name": "Beijing",
+          "lat": 39.9,
+          "lon": 116.4,
+          "alt": 43.5
         }
-      }
-    ],
-    "planets": [
-      {
-        "id": "earth",
-        "name": "Earth",
-        "type": "planet",
-        "primary": "sun",
-        "physical": {
-          "mass": 5.972e24,
-          "radius": 6371
-        },
-        "state": {
-          "position": [0, 0, 0],
-          "velocity": [0, 0, 0]
-        },
-        "rotation": {
-          "period": 86164,
-          "obliquity": 23.44,
-          "initialMeridianAngle": 0,
-          "progradeDirection": true
-        },
-        "orbit": {
-          "semiMajorAxis": 149597870,
-          "eccentricity": 0.0167,
-          "inclination": 0,
-          "longitudeOfAscendingNode": 0,
-          "argumentOfPeriapsis": 0,
-          "meanAnomalyAtEpoch": 0,
-          "epoch": "2025-01-01T00:00:00Z"
-        },
-        "visual": {
-          "color": "#1a73e8",
-          "texture": "/textures/earth_daymap.jpg"
-        },
-        "groundStations": [
-          { "id": "beijing", "name": "Beijing", "lat": 39.9, "lon": 116.4, "alt": 43.5 }
-        ],
-        "observationPoints": [
-          {
-            "id": "observer1",
-            "name": "Observer1",
-            "lat": 39.9,
-            "lon": 116.4,
-            "alt": 43.5
-          }
-        ]
-      }
-    ],
-    "naturalSatellites": [
-      {
-        "id": "moon",
-        "name": "Moon",
-        "type": "natural-satellite",
-        "primary": "earth",
-        "physical": {
-          "mass": 7.342e22,
-          "radius": 1737.4
-        },
-        "state": {
-          "position": [0, 0, 0],
-          "velocity": [0, 0, 0]
-        },
-        "rotation": {
-          "period": 2360591,
-          "obliquity": 6.68,
-          "initialMeridianAngle": 0,
-          "progradeDirection": true
-        },
-        "orbit": {
-          "semiMajorAxis": 384400,
-          "eccentricity": 0.0549,
-          "inclination": 5.14,
-          "longitudeOfAscendingNode": 125.08,
-          "argumentOfPeriapsis": 318.15,
-          "meanAnomalyAtEpoch": 135.27,
-          "epoch": "2025-01-01T00:00:00Z"
-        },
-        "visual": {
-          "color": "#cccccc",
-          "texture": "/textures/moon_daymap.jpg"
+      ],
+      "observationPoints": [
+        {
+          "id": "observer1",
+          "name": "Observer1",
+          "lat": 39.9,
+          "lon": 116.4,
+          "alt": 43.5
         }
+      ]
+    }
+  ],
+  "naturalSatellites": [
+    {
+      "id": "moon",
+      "name": "Moon",
+      "type": "natural-satellite",
+      "primary": "earth",
+      "physical": {
+        "mass": 7.342e22,
+        "radius": 1737.4
+      },
+      "state": {
+        "position": [0, 0, 0],
+        "velocity": [0, 0, 0]
+      },
+      "rotation": {
+        "period": 2360591,
+        "obliquity": 6.68,
+        "initialMeridianAngle": 0,
+        "progradeDirection": true
+      },
+      "orbit": {
+        "semiMajorAxis": 384400,
+        "eccentricity": 0.0549,
+        "inclination": 5.14,
+        "longitudeOfAscendingNode": 125.08,
+        "argumentOfPeriapsis": 318.15,
+        "meanAnomalyAtEpoch": 135.27,
+        "epoch": "2025-01-01T00:00:00Z"
+      },
+      "visual": {
+        "color": "#cccccc",
+        "texture": "/textures/moon_daymap.jpg"
       }
-    ],
-    "artificialSatellites": [
-      {
-        "id": "hubble",
-        "name": "Hubble",
-        "type": "artificial-satellite",
-        "primary": "earth",
-        "physical": {
-          "mass": 10,
-          "radius": 1
-        },
-        "state": {
-          "position": [0, 0, 0],
-          "velocity": [0, 0, 0]
-        },
-        "rotation": {
-          "period": 5400,
-          "obliquity": 0,
-          "initialMeridianAngle": 0,
-          "progradeDirection": true
-        },
-        "orbit": {
-          "semiMajorAxis": 6971,
-          "eccentricity": 0,
-          "inclination": 28.5,
-          "longitudeOfAscendingNode": 0,
-          "argumentOfPeriapsis": 0,
-          "meanAnomalyAtEpoch": 0,
-          "epoch": "2025-01-01T00:00:00Z"
-        },
-        "visual": {
-          "color": "#ffcc00",
-          "emissive": true,
-          "wireframe": false
-        }
+    }
+  ],
+  "artificialSatellites": [
+    {
+      "id": "hubble",
+      "name": "Hubble",
+      "type": "artificial-satellite",
+      "primary": "earth",
+      "physical": {
+        "mass": 10,
+        "radius": 1
+      },
+      "state": {
+        "position": [0, 0, 0],
+        "velocity": [0, 0, 0]
+      },
+      "rotation": {
+        "period": 5400,
+        "obliquity": 0,
+        "initialMeridianAngle": 0,
+        "progradeDirection": true
+      },
+      "orbit": {
+        "semiMajorAxis": 6971,
+        "eccentricity": 0,
+        "inclination": 28.5,
+        "longitudeOfAscendingNode": 0,
+        "argumentOfPeriapsis": 0,
+        "meanAnomalyAtEpoch": 0,
+        "epoch": "2025-01-01T00:00:00Z"
+      },
+      "visual": {
+        "color": "#ffcc00",
+        "emissive": true,
+        "wireframe": false
       }
-    ]
-  }
-  
+    }
+  ]
+}
