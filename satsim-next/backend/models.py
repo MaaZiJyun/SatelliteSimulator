@@ -78,4 +78,5 @@ class SolarSystemData(BaseModel):
 class SolarSystemRequest(BaseModel):
     data: SolarSystemData
     mode: Literal["heliocentric", "geocentric"]  # 模式可以限制视图中心（如太阳系或地心）
-    t: float # 当前时间，单位秒
+    timeSlotNum: int # 时间槽数量
+    timeSlotDuration: int # 当前时间，单位秒

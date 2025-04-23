@@ -9,7 +9,7 @@ def build_positions_recursive(
     central_id: str,
     id_to_body: Dict[str, Body],
     id_to_position: Dict[str, List[float]],
-    t:float = 0
+    t:int = 0
 ):
     central_body = id_to_body[central_id]
     centralPosition = id_to_position[central_id]
