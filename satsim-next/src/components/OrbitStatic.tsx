@@ -24,7 +24,7 @@ export default function OrbitStatic({
   inclination = 0,
   ascendingNode = 0,
   argOfPeriapsis = 0,
-  segments = 256,
+  segments = 512,
   color = "gray",
 }: OrbitProps) {
   const scale = usePreferenceStore((state) => state.scale);

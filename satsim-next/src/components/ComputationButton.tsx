@@ -1,63 +1,157 @@
 "use client";
 
 import { useStore } from "@/stores/dataStores";
-import { PlayIcon } from "@heroicons/react/24/outline";
+import { useLogStore } from "@/stores/logStores";
+import { useClockStore } from "@/stores/timeStores";
+import {
+  ArrowPathIcon,
+  PlayIcon,
+  StopIcon,
+  VariableIcon,
+} from "@heroicons/react/24/outline";
+import { is } from "@react-three/fiber/dist/declarations/src/core/utils";
+import { useState, useRef } from "react";
 
 export default function ComputationButton() {
   const { data, isDataEmpty, updatePosition } = useStore();
+  const { speed, setTime } = useClockStore();
+  const addLog = useLogStore((state) => state.addLog);
+  const [loaded, setLoaded] = useState<number>(0);
+  const [estLoaded, setEstLoaded] = useState<number>(0);
+  const [isloading, setIsloading] = useState<boolean>(false);
+  const [frames, setFrames] = useState<any[]>([]);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
-  const handleCompute = async (mode: "heliocentric" | "geocentric") => {
-    if (isDataEmpty()) {
-      console.log("请求体不能为空");
-      return;
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const estimatingRef = useRef<NodeJS.Timeout | null>(null);
+
+  const TIME_SLOT = 1000; // 请求 t = 10000，生成 10000 帧数据
+  const TIME_SLOT_DURATION = 60 * 30; // 间隔 1 秒
+
+  const playSpeed = 1000 / speed > 1 ? 1000 / speed : 1; // 播放速度，至少 1 毫秒
+
+  const handlePlay = async () => {
+    if (!isPlaying) {
+      if (loaded === 0 || frames.length === 0) {
+        // 初次加载
+        if (isDataEmpty()) {
+          addLog("Request failed: No data available.");
+          return;
+        }
+        setIsloading(true);
+        setEstLoaded(0);
+
+        estimatingRef.current = setInterval(() => {
+          setEstLoaded((prev) => (prev < TIME_SLOT - 1 ? prev + 20 : prev)); // 最多到 95%
+        }, 1);
+
+        console.log("正在请求10000帧...");
+        try {
+          const res = await fetch("/api/compute", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              data: data,
+              mode: "heliocentric",
+              timeSlotNum: TIME_SLOT,
+              timeSlotDuration: TIME_SLOT_DURATION,
+            }),
+          });
+
+          const result = await res.json();
+
+          if (res.ok && result?.result) {
+            setFrames(result.result);
+            setLoaded(result.result.length);
+            updatePosition(result.result[0]); // 首帧立即显示
+            setTime(0);
+          } else {
+            console.error("请求成功但结果为空：", result);
+          }
+        } catch (err) {
+          console.error("请求失败：", err);
+        } finally {
+          setIsloading(false);
+          if (estimatingRef.current) {
+            clearInterval(estimatingRef.current);
+            estimatingRef.current = null;
+          }
+        }
+      } else {
+        // 已加载，直接播放
+        updatePosition(frames[0]);
+        setTime(0);
+        setIsPlaying(true);
+        startPlayback(frames);
+      }
+    } else {
+      stopPlayback();
+      setIsPlaying(false);
     }
+  };
 
-    let t = 0;
+  const startPlayback = (frameData: any[]) => {
+    let currentIndex = 1;
 
-    const runStep = async (count: number) => {
-      if (count >= 10) {
-        console.log("已完成10次请求");
+    timerRef.current = setInterval(() => {
+      if (currentIndex >= frameData.length) {
+        stopPlayback();
+        setIsPlaying(false);
         return;
       }
+      updatePosition(frameData[currentIndex]);
+      setTime(currentIndex);
+      currentIndex += 1;
+    }, playSpeed); // 每秒播放一帧
+  };
 
-      try {
-        const body = JSON.stringify({ data, mode, t });
-        const res = await fetch("/api/compute", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body,
-        });
-
-        const result = await res.json();
-
-        if (res.ok) {
-          if (result?.result) {
-            console.log(`第 ${count + 1} 次结果 (t=${t})：`, result.result);
-            updatePosition(result.result);
-          } else {
-            console.warn(`第 ${count + 1} 次 (t=${t})：接口响应成功，但结果为空`);
-          }
-        } else {
-          console.error(`第 ${count + 1} 次 (t=${t})：接口请求失败`, result);
-        }
-      } catch (err) {
-        console.error(`第 ${count + 1} 次 (t=${t}) 请求出错：`, err);
-      }
-
-      // 下一轮：延时 0.1 秒
-      setTimeout(() => runStep(count + 1), 50);
-      t += 100000;
-    };
-
-    runStep(0);
+  const stopPlayback = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
   };
 
   return (
-    <button
-      className="px-2 py-2 hover:text-[#00ffff] hover:cursor-pointer"
-      onClick={() => handleCompute("heliocentric")}
-    >
-      <PlayIcon className="h-5 w-5" />
-    </button>
+    <>
+      {isloading ? (
+        <div className="flex items-center justify-center w-full px-4 space-x-4">
+          <div className="relative w-32 h-1 bg-gray-400 rounded-full overflow-hidden">
+            <div
+              className="absolute top-0 left-0 h-full bg-[#00ffff] transition-all duration-300 ease-out"
+              style={{ width: `${(estLoaded / TIME_SLOT) * 100}%` }}
+            ></div>
+          </div>
+          <p className="text-xs text-gray-400">
+            Loading... {Math.round((estLoaded / TIME_SLOT) * 100)}%
+          </p>
+        </div>
+      ) : (
+        <>
+          <button
+            className="px-2 py-2 hover:text-[#00ffff] hover:cursor-pointer"
+            onClick={handlePlay}
+          >
+            {isPlaying ? (
+              <StopIcon className="h-5 w-5 text-[#00ffff]" />
+            ) : (
+              <>
+                {frames.length > 0 ? (
+                  <PlayIcon className="h-5 w-5" />
+                ) : (
+                  <VariableIcon className="h-5 w-5" />
+                )}
+              </>
+            )}
+          </button>
+          <button
+            className="px-2 py-2 hover:text-[#00ffff] hover:cursor-pointer"
+            onClick={() => setFrames([])}
+          >
+            <ArrowPathIcon className="h-5 w-5" />
+          </button>
+        </>
+      )}
+    </>
   );
 }

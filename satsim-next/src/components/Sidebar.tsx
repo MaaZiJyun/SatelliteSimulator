@@ -32,7 +32,7 @@ function SidebarPart({ title, children, onAdd }: PartProps) {
   return (
     <div
       className={`w-full ${
-        open && "bg-white/10"
+        open && "bg-black/10 px-1 py-2"
       } border-t border-gray-500 select-none`}
     >
       <div
@@ -159,7 +159,7 @@ export default function Sidebar() {
   }
 
   return (
-    <div className="h-full w-full overflow-auto">
+    <div className="h-full w-full overflow-auto bg-black/30">
       <div className="flex items-center justify-between px-4 py-2">
         <h1 className="text-base">EXPLORER</h1>
         <div className="flex items-center justify-center space-x-2">

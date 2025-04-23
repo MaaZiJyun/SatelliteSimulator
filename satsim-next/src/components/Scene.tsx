@@ -27,7 +27,7 @@ function Scene() {
 
   return (
     <Canvas shadows>
-      <ambientLight intensity={5} />
+      <ambientLight intensity={0.1} />
       <CameraTracker />
       <SmoothCameraPosition />
       <PerspectiveCamera
@@ -35,7 +35,7 @@ function Scene() {
         position={finalPosition}
         fov={30}
         near={0.1}
-        far={10000000}
+        far={100000000}
       />
       <OrbitControls
         target={orbitTarget}
@@ -43,10 +43,10 @@ function Scene() {
         enableZoom
         enableRotate
         minDistance={10 * scale}
-        maxDistance={10000000}
+        maxDistance={100000000}
       />
       <Stars
-        radius={1000000}
+        radius={10000000}
         depth={50}
         count={5000}
         factor={4}
@@ -55,7 +55,7 @@ function Scene() {
       />
       <pointLight
         position={[0, 0, 0]}
-        intensity={6} // 尝试更高的强度
+        intensity={3} // 尝试更高的强度
         distance={0} // 无限范围
         decay={0} // 不衰减
         color="#ffffff"
