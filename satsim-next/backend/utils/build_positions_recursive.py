@@ -25,13 +25,8 @@ def build_positions_recursive(
             semiMajorAxis = body.orbit.semiMajorAxis  # a, 半长轴，km
             eccentricity = body.orbit.eccentricity   # e，偏心率
             inclination = body.orbit.inclination,  
-            # abs_pos = calc_position(central_position=centralPosition,
-            #                         central_mass=centralMass,
-            #                         satellite_mass=satelliteMass,
-            #                         semi_major_axis=semiMajorAxis,
-            #                         eccentricity=eccentricity,
-            #                         inclination=inclination,
-            #                         t=t)
+            
+            
             abs_pos = new_calc_position(
                 central_position=centralPosition,
                 central_mass=centralMass,

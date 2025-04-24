@@ -1,14 +1,5 @@
 from typing import List, Optional, Literal, Union
 from pydantic import BaseModel
-
-
-# class Vector3D(BaseModel):
-#     x: float
-#     y: float
-#     z: float
-
-#     def to_list(self):
-#         return [self.x, self.y, self.z]
     
 class Physical(BaseModel):
     mass: float  # 质量（单位：kg）
