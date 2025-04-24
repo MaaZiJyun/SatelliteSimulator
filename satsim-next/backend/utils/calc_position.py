@@ -54,10 +54,6 @@ def calc_position(
 
     # 2. 平近点角 M
     M = 2 * np.pi * (t % T) / T  # rad
-    
-    # print(f"a = {a}, mu = {mu}")
-    # print(f"T (orbital period) = {T}")
-    # print(f"t = {t}, M = {M}")
 
     # 3. 偏近点角 E（通过数值方法求解）
     E = solve_kepler_equation(M, e)
