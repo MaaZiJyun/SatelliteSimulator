@@ -379,7 +379,7 @@
         "progradeDirection": true
       },
       "orbit": {
-        "semiMajorAxis": 6971,
+        "semiMajorAxis": 1,
         "eccentricity": 0,
         "inclination": 28.5,
         "longitudeOfAscendingNode": 0,

@@ -29,6 +29,7 @@ export default function Desktop() {
               <PanelGroup direction="vertical">
                 <Panel defaultSize={70}>
                   <>
+                    {isFormOpen && <EditPanel />}
                     {isDataEmpty() ? (
                       <Beginning />
                     ) : (
@@ -36,7 +37,6 @@ export default function Desktop() {
                         <Scene />
                       </div>
                     )}
-                    {isFormOpen && <EditPanel />}
                   </>
                 </Panel>
                 <PanelResizeHandle className="h-[2px] bg-gray-500 hover:bg-[#00ffff] cursor-row-resize" />

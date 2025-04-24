@@ -28,6 +28,19 @@ export default function EditPanel() {
     }));
   };
 
+  const handleDeepNestedChange = (key: string, subKey: string, deepKey: string, value: any) => {
+    setForm((prev: any) => ({
+      ...prev,
+      [key]: {
+        ...prev[key],
+        [subKey]: {
+          ...prev[key][subKey],
+          [deepKey]: value,
+        },
+      },
+    }));
+  };
+
   const handleSave = () => {
     if (!data) return;
 
@@ -109,11 +122,11 @@ export default function EditPanel() {
       );
     }
 
-    // Handle rotation object
-    if (key === "rotation" && typeof value === "object") {
+    // Handle physical object
+    if (key === "physical" && typeof value === "object") {
       return (
         <div className="mb-4" key={key}>
-          <h3 className="text-base font-semibold mb-2">Rotation</h3>
+          <h3 className="text-base font-semibold mb-2">Physical</h3>
           {Object.entries(value).map(([subKey, subValue]) => (
             <div className="mb-2" key={subKey}>
               <label className="block text-sm mb-1 capitalize">
@@ -133,13 +146,84 @@ export default function EditPanel() {
       );
     }
 
+    // Handle rotation object
+    if (key === "rotation" && typeof value === "object") {
+      return (
+        <div className="mb-4" key={key}>
+          <h3 className="text-base font-semibold mb-2">Rotation</h3>
+          {Object.entries(value).map(([subKey, subValue]) => {
+            if (subKey === "progradeDirection") {
+              return (
+                <div className="mb-2" key={subKey}>
+                  <label className="block text-sm mb-1 capitalize">
+                    {subKey.replace(/([A-Z])/g, " $1").trim()}
+                  </label>
+                  <input
+                    type="checkbox"
+                    checked={subValue as boolean}
+                    onChange={(e) =>
+                      handleNestedChange(key, subKey, e.target.checked)
+                    }
+                    className="h-4 w-4 text-[#00ffff] focus:ring-[#00ffff] border-gray-300 rounded"
+                  />
+                </div>
+              );
+            }
+            return (
+              <div className="mb-2" key={subKey}>
+                <label className="block text-sm mb-1 capitalize">
+                  {subKey.replace(/([A-Z])/g, " $1").trim()}
+                </label>
+                <input
+                  className="w-full px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-[#00ffff] focus:border-[#00ffff]"
+                  type="number"
+                  value={subValue as number}
+                  onChange={(e) =>
+                    handleNestedChange(key, subKey, +e.target.value)
+                  }
+                />
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+
+    // Handle orbit object
+    if (key === "orbit" && typeof value === "object") {
+      return (
+        <div className="mb-4" key={key}>
+          <h3 className="text-base font-semibold mb-2">Orbit</h3>
+          {Object.entries(value).map(([subKey, subValue]) => (
+            <div className="mb-2" key={subKey}>
+              <label className="block text-sm mb-1 capitalize">
+                {subKey.replace(/([A-Z])/g, " $1").trim()}
+              </label>
+              <input
+                className="w-full px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-[#00ffff] focus:border-[#00ffff]"
+                type={typeof subValue === "number" ? "number" : "text"}
+                value={subValue as string | number | readonly string[] | undefined}
+                onChange={(e) =>
+                  handleNestedChange(
+                    key,
+                    subKey,
+                    typeof subValue === "number" ? +e.target.value : e.target.value
+                  )
+                }
+              />
+            </div>
+          ))}
+        </div>
+      );
+    }
+
     // Handle visual object
     if (key === "visual" && typeof value === "object") {
       return (
         <div className="mb-4" key={key}>
           <h3 className="text-base font-semibold mb-2">Visual</h3>
           {Object.entries(value).map(([subKey, subValue]) => {
-            if (subKey === "emissive") {
+            if (subKey === "emissive" || subKey === "wireframe") {
               return (
                 <div className="mb-2" key={subKey}>
                   <label className="block text-sm mb-1 capitalize">
@@ -182,7 +266,7 @@ export default function EditPanel() {
         <div className="mb-4" key={key}>
           <h3 className="text-sm font-semibold mb-2">Ground Stations</h3>
           {value.map((station: any, index: number) => (
-            <div key={index} className="border p-2 rounded mb-2">
+            <div key={station.id} className="border p-2 rounded mb-2">
               <input
                 className="w-full mb-1 px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-[#00ffff] focus:border-[#00ffff]"
                 placeholder="Name"
@@ -245,7 +329,7 @@ export default function EditPanel() {
         <div className="mb-4" key={key}>
           <h3 className="text-sm font-semibold mb-2">Observation Points</h3>
           {value.map((point: any, index: number) => (
-            <div key={index} className="border p-2 rounded mb-2">
+            <div key={point.id} className="border p-2 rounded mb-2">
               <input
                 className="w-full mb-1 px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-[#00ffff] focus:border-[#00ffff]"
                 placeholder="Name"
