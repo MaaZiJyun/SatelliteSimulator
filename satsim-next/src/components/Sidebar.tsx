@@ -159,152 +159,155 @@ export default function Sidebar() {
   }
 
   return (
-    <div className="h-full w-full overflow-auto bg-black/30">
-      <div className="flex items-center justify-between px-4 py-2">
-        <h1 className="text-base">EXPLORER</h1>
-        <div className="flex items-center justify-center space-x-2">
-          <button
-            className="hover:text-[#00ffff] rounded hover:cursor-pointer"
-            onClick={() =>
-              setData({
-                stars: [],
-                planets: [],
-                naturalSatellites: [],
-                artificialSatellites: [],
-              })
-            }
-          >
-            <FolderIcon className="h-5 w-5" />
-          </button>
-          <button
-            className="hover:text-[#00ffff] rounded hover:cursor-pointer"
-            onClick={downloadDataAsJSON}
-          >
-            <ArrowTopRightOnSquareIcon className="h-5 w-5" />
-          </button>
+    <div className="flex flex-col h-full w-full overflow-auto bg-black/30">
+        <div className="flex items-center justify-between px-4 py-2">
+          <h1 className="text-base">EXPLORER</h1>
+          <div className="flex items-center justify-center space-x-2">
+            <button
+              className="hover:text-[#00ffff] rounded hover:cursor-pointer"
+              onClick={() =>
+                setData({
+                  stars: [],
+                  planets: [],
+                  naturalSatellites: [],
+                  artificialSatellites: [],
+                })
+              }
+            >
+              <FolderIcon className="h-5 w-5" />
+            </button>
+            <button
+              className="hover:text-[#00ffff] rounded hover:cursor-pointer"
+              onClick={downloadDataAsJSON}
+            >
+              <ArrowTopRightOnSquareIcon className="h-5 w-5" />
+            </button>
+          </div>
         </div>
-      </div>
 
-      <SidebarPart title="Architecture" onAdd={addStar}>
+        <SidebarPart title="Architecture" onAdd={addStar}>
+          {/* Planets */}
+          {(data.stars || []).map((star, idx) => (
+            <SidebarSection
+              key={`star-${idx}`}
+              title={star.name}
+              item={star}
+              onAdd={addPlanet}
+              onRemove={() => deleteStar(star.id)}
+            >
+              {(data.planets || [])
+                .filter((plt) => plt.primary === star.id)
+                .map((plt, pidx) => (
+                  <SidebarSection
+                    key={`plt-${pidx}`}
+                    title={plt.name}
+                    item={plt}
+                    onAdd={addNaturalSatellite}
+                    onRemove={() => deletePlanet(plt.id)}
+                  >
+                    {(data.naturalSatellites || [])
+                      .filter((n) => n.primary === plt.id)
+                      .map((nsat, nidx) => (
+                        <SidebarSection
+                          key={`nsat-${nidx}`}
+                          title={nsat.name}
+                          item={nsat}
+                          onRemove={() => deleteNaturalSatellite(nsat.id)}
+                        >
+                          {(data.artificialSatellites || [])
+                            .filter((a) => a.primary === nsat.id)
+                            .map((asat, aidx) => (
+                              <SidebarItem
+                                key={`asat-${aidx}`}
+                                name={asat.name}
+                                item={asat}
+                                onRemove={() =>
+                                  deleteArtificialSatellite(asat.id)
+                                }
+                              />
+                            ))}
+                        </SidebarSection>
+                      ))}
+                    {(data.artificialSatellites || [])
+                      .filter((sat) => sat.primary === plt.id)
+                      .map((sat, sidx) => (
+                        <SidebarItem
+                          key={`sat-${sidx}`}
+                          name={sat.name}
+                          item={sat}
+                          onRemove={() => deleteArtificialSatellite(sat.id)}
+                        />
+                      ))}
+                  </SidebarSection>
+                ))}
+            </SidebarSection>
+          ))}
+        </SidebarPart>
+
+        {/* Stars */}
+        <SidebarPart title="Stars" onAdd={addStar}>
+          {(data.stars || []).map((star, idx) => (
+            <SidebarItem
+              key={`star-${idx}`}
+              name={star.name}
+              item={star}
+              onRemove={() => deleteStar(star.id)}
+            />
+          ))}
+        </SidebarPart>
+
         {/* Planets */}
-        {(data.stars || []).map((star, idx) => (
-          <SidebarSection
-            key={`star-${idx}`}
-            title={star.name}
-            item={star}
-            onAdd={addPlanet}
-            onRemove={() => deleteStar(star.id)}
-          >
-            {(data.planets || [])
-              .filter((plt) => plt.primary === star.id)
-              .map((plt, pidx) => (
-                <SidebarSection
-                  key={`plt-${pidx}`}
-                  title={plt.name}
-                  item={plt}
-                  onAdd={addNaturalSatellite}
-                  onRemove={() => deletePlanet(plt.id)}
-                >
-                  {(data.naturalSatellites || [])
-                    .filter((n) => n.primary === plt.id)
-                    .map((nsat, nidx) => (
-                      <SidebarSection
-                        key={`nsat-${nidx}`}
-                        title={nsat.name}
-                        item={nsat}
-                        onRemove={() => deleteNaturalSatellite(nsat.id)}
-                      >
-                        {(data.artificialSatellites || [])
-                          .filter((a) => a.primary === nsat.id)
-                          .map((asat, aidx) => (
-                            <SidebarItem
-                              key={`asat-${aidx}`}
-                              name={asat.name}
-                              item={asat}
-                              onRemove={() =>
-                                deleteArtificialSatellite(asat.id)
-                              }
-                            />
-                          ))}
-                      </SidebarSection>
-                    ))}
-                  {(data.artificialSatellites || [])
-                    .filter((sat) => sat.primary === plt.id)
-                    .map((sat, sidx) => (
-                      <SidebarItem
-                        key={`sat-${sidx}`}
-                        name={sat.name}
-                        item={sat}
-                        onRemove={() => deleteArtificialSatellite(sat.id)}
-                      />
-                    ))}
-                </SidebarSection>
-              ))}
-          </SidebarSection>
-        ))}
-      </SidebarPart>
+        <SidebarPart title="Planets" onAdd={addPlanet}>
+          {(data.planets || []).map((planet, idx) => (
+            <div key={`planet-${idx}`} className="space-y-1">
+              <div className="flex items-center justify-between">
+                <SidebarItem
+                  name={planet.name}
+                  item={planet}
+                  onRemove={() => deleteNaturalSatellite(planet.id)}
+                />
+              </div>
+            </div>
+          ))}
+        </SidebarPart>
 
-      {/* Stars */}
-      <SidebarPart title="Stars" onAdd={addStar}>
-        {(data.stars || []).map((star, idx) => (
-          <SidebarItem
-            key={`star-${idx}`}
-            name={star.name}
-            item={star}
-            onRemove={() => deleteStar(star.id)}
-          />
-        ))}
-      </SidebarPart>
-
-      {/* Planets */}
-      <SidebarPart title="Planets" onAdd={addPlanet}>
-        {(data.planets || []).map((planet, idx) => (
-          <div key={`planet-${idx}`} className="space-y-1">
-            <div className="flex items-center justify-between">
+        {/* Natural Satellites */}
+        <SidebarPart
+          title="Natural Satellites"
+          onAdd={() => addNaturalSatellite()}
+        >
+          {(data.naturalSatellites || []).map((sat, idx) => (
+            <div
+              key={`nsat-${idx}`}
+              className="flex items-center justify-between pl-2"
+            >
               <SidebarItem
-                name={planet.name}
-                item={planet}
-                onRemove={() => deleteNaturalSatellite(planet.id)}
+                name={sat.name}
+                item={sat}
+                onRemove={() => deleteNaturalSatellite(sat.id)}
               />
             </div>
-          </div>
-        ))}
-      </SidebarPart>
+          ))}
+        </SidebarPart>
 
-      {/* Natural Satellites */}
-      <SidebarPart
-        title="Natural Satellites"
-        onAdd={() => addNaturalSatellite()}
-      >
-        {(data.naturalSatellites || []).map((sat, idx) => (
-          <div
-            key={`nsat-${idx}`}
-            className="flex items-center justify-between pl-2"
-          >
-            <SidebarItem
-              name={sat.name}
-              item={sat}
-              onRemove={() => deleteNaturalSatellite(sat.id)}
-            />
-          </div>
-        ))}
-      </SidebarPart>
-
-      {/* Artificial Satellites */}
-      <SidebarPart title="Artificial Satellites" onAdd={addArtificialSatellite}>
-        {(data.artificialSatellites || []).map((sat, idx) => (
-          <div
-            key={`asat-${idx}`}
-            className="flex items-center justify-between pl-2"
-          >
-            <SidebarItem
-              name={sat.name}
-              item={sat}
-              onRemove={() => deleteArtificialSatellite(sat.id)}
-            />
-          </div>
-        ))}
-      </SidebarPart>
+        {/* Artificial Satellites */}
+        <SidebarPart
+          title="Artificial Satellites"
+          onAdd={addArtificialSatellite}
+        >
+          {(data.artificialSatellites || []).map((sat, idx) => (
+            <div
+              key={`asat-${idx}`}
+              className="flex items-center justify-between pl-2"
+            >
+              <SidebarItem
+                name={sat.name}
+                item={sat}
+                onRemove={() => deleteArtificialSatellite(sat.id)}
+              />
+            </div>
+          ))}
+        </SidebarPart>
     </div>
   );
 }
