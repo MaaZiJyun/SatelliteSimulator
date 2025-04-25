@@ -15,8 +15,14 @@ function Scene() {
   const { finalPosition, orbitTarget } = useCameraStore();
   const scale = usePreferenceStore((state) => state.scale);
 
-  const { showLabels, showOrbits, showTexture, showWareframe, showaxis } =
-    usePreferenceStore();
+  const {
+    lightOn,
+    showLabels,
+    showOrbits,
+    showTexture,
+    showWareframe,
+    showaxis,
+  } = usePreferenceStore();
 
   const allBodies = [
     ...data.stars,
@@ -27,7 +33,7 @@ function Scene() {
 
   return (
     <Canvas shadows>
-      <ambientLight intensity={0.1} />
+      <ambientLight intensity={lightOn ? 3 : 0.1} />
       <CameraTracker />
       <SmoothCameraPosition />
       <PerspectiveCamera
@@ -43,10 +49,10 @@ function Scene() {
         enableZoom
         enableRotate
         minDistance={10 * scale}
-        maxDistance={100000000}
+        maxDistance={8000000000 * scale}
       />
       <Stars
-        radius={10000000}
+        radius={8000000000 * scale}
         depth={50}
         count={5000}
         factor={4}
