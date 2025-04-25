@@ -13,14 +13,14 @@ import PreferenceButton from "./PreferenceButton";
 export default function Terminal() {
   const logs = useLogStore((s) => s.logs);
   // const { controller, setController } = useCameraStore();
-  const [activeTab, setActiveTab] = useState("Output");
+  const [activeTab, setActiveTab] = useState("CONSOLE");
 
   return (
     <div className="h-full w-full flex flex-col bg-black/30">
       {/* Navigation Tabs */}
       <div className="flex justify-between items-center px-2">
         <div className="flex text-sm">
-          {["Output", "Mission"].map((tab) => (
+          {["CONSOLE", "FUNCTIONS"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -50,20 +50,23 @@ export default function Terminal() {
 
       {/* Tab Content */}
       <div className="font-mono p-4 h-full w-full overflow-y-auto text-white bg-black/70">
-        {activeTab === "Output" && (
+        {activeTab === "CONSOLE" && (
           <div>
-            {logs.slice().reverse().map((l, i) => (
-              <p
-                key={i}
-                className={`text-xs ${i === 0 ? "text-[#00ffff]" : ""}`}
-              >
-                {l}
-              </p>
-            ))}
+            {logs
+              .slice()
+              .reverse()
+              .map((l, i) => (
+                <p
+                  key={i}
+                  className={`text-xs ${i === 0 ? "text-[#00ffff]" : ""}`}
+                >
+                  {l}
+                </p>
+              ))}
             <p className="text-xs text-yellow-400">Welcome to O.R.B.I.T</p>
           </div>
         )}
-        {activeTab === "Mission" && (
+        {activeTab === "FUNCTIONS" && (
           <div>
             <p className="text-xs">Mission details will appear here...</p>
           </div>
