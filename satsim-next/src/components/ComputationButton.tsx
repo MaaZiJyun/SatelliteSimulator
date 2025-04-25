@@ -28,7 +28,7 @@ export default function ComputationButton() {
   const TIME_SLOT = 1000; // 请求 t = 10000，生成 10000 帧数据
   const TIME_SLOT_DURATION = 60 * 30; // 间隔 1 秒
 
-  const playSpeed = 1000 / speed > 1 ? 1000 / speed : 1; // 播放速度，至少 1 毫秒
+  const playSpeed = 1000 / speed > 1 ? 1000 / speed : 1; // 播放速度，至少 1 毫秒 (控制播放帧的频率)
 
   const handlePlay = async () => {
     if (!isPlaying) {
