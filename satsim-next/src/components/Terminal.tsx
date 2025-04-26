@@ -1,24 +1,37 @@
 import { useState } from "react";
 import { useLogStore } from "@/stores/logStores";
-import {
-  Cog6ToothIcon,
-  GlobeAltIcon,
-  PlayIcon,
-  RocketLaunchIcon,
-} from "@heroicons/react/24/outline";
-import { useCameraStore } from "@/stores/cameraStores";
 import ComputationButton from "./ComputationButton";
-import PreferenceButton from "./PreferenceButton";
+import { usePreferenceStore } from "@/stores/preferenceStores";
+import {
+  GlobeAltIcon,
+  GlobeAsiaAustraliaIcon,
+  LightBulbIcon,
+  StopCircleIcon,
+  TagIcon,
+} from "@heroicons/react/24/outline";
 
 export default function Terminal() {
   const logs = useLogStore((s) => s.logs);
-  // const { controller, setController } = useCameraStore();
   const [activeTab, setActiveTab] = useState("CONSOLE");
+  const {
+    lightOn,
+    showLabels,
+    showOrbits,
+    showTexture,
+    showWareframe,
+    showaxis,
+    setLightOn,
+    setShowLabels,
+    setShowOrbits,
+    setShowTexture,
+    setShowWareframe,
+    setShowaxis,
+  } = usePreferenceStore();
 
   return (
     <div className="h-full w-full flex flex-col bg-black/30">
       {/* Navigation Tabs */}
-      <div className="flex justify-between items-center px-2">
+      <div className="flex justify-between items-center px-4">
         <div className="flex text-sm">
           {["CONSOLE", "FUNCTIONS"].map((tab) => (
             <button
@@ -34,17 +47,48 @@ export default function Terminal() {
             </button>
           ))}
         </div>
-        <div className="flex">
+        <div className="flex space-x-3">
           <ComputationButton />
-          {/* <button className="px-1 py-1 hover:text-[#00ffff] hover:cursor-pointer">
-            <div className="relative px-1 py-1">
-              <GlobeAltIcon className="h-5 w-5" />
-              <div className="absolute bottom-0 right-0">
-                <PlayIcon className="h-3 w-3" />
-              </div>
-            </div>
-          </button> */}
-          <PreferenceButton />
+          <button
+            className={`hover:text-[#00ffff] hover:cursor-pointer ${
+              showWareframe && "text-[#00ffff]"
+            }`}
+            onClick={setShowWareframe}
+          >
+            <GlobeAltIcon className="w-5 h-5" />
+          </button>
+          <button
+            className={`hover:text-[#00ffff] hover:cursor-pointer ${
+              showTexture && "text-[#00ffff]"
+            }`}
+            onClick={setShowTexture}
+          >
+            <GlobeAsiaAustraliaIcon className="w-5 h-5" />
+          </button>
+          <button
+            className={`hover:text-[#00ffff] hover:cursor-pointer ${
+              showOrbits && "text-[#00ffff]"
+            }`}
+            onClick={setShowOrbits}
+          >
+            <StopCircleIcon className="w-5 h-5" />
+          </button>
+          <button
+            className={`hover:text-[#00ffff] hover:cursor-pointer ${
+              showLabels && "text-[#00ffff]"
+            }`}
+            onClick={setShowLabels}
+          >
+            <TagIcon className="w-5 h-5" />
+          </button>
+          <button
+            className={`hover:text-[#00ffff] hover:cursor-pointer ${
+              lightOn && "text-[#00ffff]"
+            }`}
+            onClick={setLightOn}
+          >
+            <LightBulbIcon className="w-5 h-5" />
+          </button>
         </div>
       </div>
 

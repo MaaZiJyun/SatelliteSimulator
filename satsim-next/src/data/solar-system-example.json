@@ -16,7 +16,8 @@
         "period": 2160000,
         "obliquity": 7.25,
         "initialMeridianAngle": 0,
-        "progradeDirection": true
+        "progradeDirection": true,
+        "currentAngle": 0.0
       },
       "visual": {
         "color": "#ffff00",
@@ -43,7 +44,8 @@
         "period": 5067032,
         "obliquity": 0.034,
         "initialMeridianAngle": 0,
-        "progradeDirection": true
+        "progradeDirection": true,
+        "currentAngle": 0.0
       },
       "orbit": {
         "semiMajorAxis": 57909227,
@@ -78,7 +80,8 @@
         "period": -20996760,
         "obliquity": 177.36,
         "initialMeridianAngle": 0,
-        "progradeDirection": false
+        "progradeDirection": false,
+        "currentAngle": 0.0
       },
       "orbit": {
         "semiMajorAxis": 108209475,
@@ -113,7 +116,8 @@
         "period": 88642,
         "obliquity": 25.19,
         "initialMeridianAngle": 0,
-        "progradeDirection": true
+        "progradeDirection": true,
+        "currentAngle": 0.0
       },
       "orbit": {
         "semiMajorAxis": 227943824,
@@ -148,7 +152,8 @@
         "period": 35730,
         "obliquity": 3.13,
         "initialMeridianAngle": 0,
-        "progradeDirection": true
+        "progradeDirection": true,
+        "currentAngle": 0.0
       },
       "orbit": {
         "semiMajorAxis": 778340821,
@@ -183,7 +188,8 @@
         "period": 38016,
         "obliquity": 26.73,
         "initialMeridianAngle": 0,
-        "progradeDirection": true
+        "progradeDirection": true,
+        "currentAngle": 0.0
       },
       "orbit": {
         "semiMajorAxis": 1426666422,
@@ -218,7 +224,8 @@
         "period": -62064,
         "obliquity": 97.77,
         "initialMeridianAngle": 0,
-        "progradeDirection": false
+        "progradeDirection": false,
+        "currentAngle": 0.0
       },
       "orbit": {
         "semiMajorAxis": 2870658186,
@@ -253,7 +260,8 @@
         "period": 57996,
         "obliquity": 28.32,
         "initialMeridianAngle": 0,
-        "progradeDirection": true
+        "progradeDirection": true,
+        "currentAngle": 0.0
       },
       "orbit": {
         "semiMajorAxis": 4498396441,
@@ -288,7 +296,8 @@
         "period": 86164,
         "obliquity": 23.44,
         "initialMeridianAngle": 0,
-        "progradeDirection": true
+        "progradeDirection": true,
+        "currentAngle": 0.0
       },
       "orbit": {
         "semiMajorAxis": 149597870,
@@ -341,7 +350,8 @@
         "period": 2360591,
         "obliquity": 6.68,
         "initialMeridianAngle": 0,
-        "progradeDirection": true
+        "progradeDirection": true,
+        "currentAngle": 0.0
       },
       "orbit": {
         "semiMajorAxis": 384400,
@@ -376,10 +386,11 @@
         "period": 5400,
         "obliquity": 0,
         "initialMeridianAngle": 0,
-        "progradeDirection": true
+        "progradeDirection": true,
+        "currentAngle": 0.0
       },
       "orbit": {
-        "semiMajorAxis": 1,
+        "semiMajorAxis": 6971,
         "eccentricity": 0,
         "inclination": 28.5,
         "longitudeOfAscendingNode": 0,

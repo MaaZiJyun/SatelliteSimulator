@@ -22,10 +22,11 @@ export default function PreferenceButton() {
   return (
     <>
       <button
-        className="flex px-2 py-2 items-center justify-center hover:text-[#00ffff] hover:cursor-pointer"
+        className="flex items-center justify-center hover:text-[#00ffff] hover:cursor-pointer"
         onClick={() => setOpen(true)}
       >
-        <Cog6ToothIcon className="h-6 w-6" />
+        {/* <Cog6ToothIcon className="h-6 w-6" /> */}
+        Preference
       </button>
 
       {open && (

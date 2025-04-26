@@ -82,7 +82,7 @@ function Scene() {
           position={getXZY(body.state.position)}
           velocity={body.state.velocity}
           obliquity={body.rotation.obliquity}
-          rotationAngle={body.rotation.initialMeridianAngle}
+          rotationAngle={body.rotation.currentAngle}
           rotationPeriod={body.rotation.period}
           color={body.visual.color}
           texture={body.visual.texture ? body.visual.texture : undefined}

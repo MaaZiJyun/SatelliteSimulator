@@ -13,8 +13,8 @@ import { is } from "@react-three/fiber/dist/declarations/src/core/utils";
 import { useState, useRef } from "react";
 
 export default function ComputationButton() {
-  const { data, isDataEmpty, updatePosition } = useStore();
-  const { speed, setTime } = useClockStore();
+  const { data, isDataEmpty, update } = useStore();
+  const { duration, speed, setTime } = useClockStore();
   const addLog = useLogStore((state) => state.addLog);
   const [loaded, setLoaded] = useState<number>(0);
   const [estLoaded, setEstLoaded] = useState<number>(0);
@@ -26,7 +26,7 @@ export default function ComputationButton() {
   const estimatingRef = useRef<NodeJS.Timeout | null>(null);
 
   const TIME_SLOT = 1000; // 请求 t = 10000，生成 10000 帧数据
-  const TIME_SLOT_DURATION = 60 * 30; // 间隔 1 秒
+  const TIME_SLOT_DURATION = duration; // 间隔 1 秒
 
   const playSpeed = 1000 / speed > 1 ? 1000 / speed : 1; // 播放速度，至少 1 毫秒 (控制播放帧的频率)
 
@@ -45,7 +45,6 @@ export default function ComputationButton() {
           setEstLoaded((prev) => (prev < TIME_SLOT - 1 ? prev + 20 : prev)); // 最多到 95%
         }, 1);
 
-        console.log("正在请求10000帧...");
         try {
           const res = await fetch("/api/compute", {
             method: "POST",
@@ -58,12 +57,21 @@ export default function ComputationButton() {
             }),
           });
 
+          console.log(
+            JSON.stringify({
+              data: data,
+              mode: "heliocentric",
+              timeSlotNum: TIME_SLOT,
+              timeSlotDuration: TIME_SLOT_DURATION,
+            })
+          );
           const result = await res.json();
+          console.log(result.result);
 
           if (res.ok && result?.result) {
             setFrames(result.result);
             setLoaded(result.result.length);
-            updatePosition(result.result[0]); // 首帧立即显示
+            update(result.result[0]); // 首帧立即显示
             setTime(0);
           } else {
             console.error("请求成功但结果为空：", result);
@@ -79,7 +87,7 @@ export default function ComputationButton() {
         }
       } else {
         // 已加载，直接播放
-        updatePosition(frames[0]);
+        update(frames[0]);
         setTime(0);
         setIsPlaying(true);
         startPlayback(frames);
@@ -99,7 +107,7 @@ export default function ComputationButton() {
         setIsPlaying(false);
         return;
       }
-      updatePosition(frameData[currentIndex]);
+      update(frameData[currentIndex]);
       setTime(currentIndex);
       currentIndex += 1;
     }, playSpeed); // 每秒播放一帧
@@ -129,27 +137,21 @@ export default function ComputationButton() {
       ) : (
         <>
           <button
-            className="px-2 py-2 hover:text-[#00ffff] hover:cursor-pointer"
+            className="hover:text-[#00ffff] hover:cursor-pointer"
             onClick={handlePlay}
           >
             {isPlaying ? (
               <StopIcon className="h-5 w-5 text-[#00ffff]" />
             ) : (
-              <>
-                {frames.length > 0 ? (
-                  <PlayIcon className="h-5 w-5" />
-                ) : (
-                  <VariableIcon className="h-5 w-5" />
-                )}
-              </>
+              <PlayIcon className="h-5 w-5" />
             )}
           </button>
-          <button
-            className="px-2 py-2 hover:text-[#00ffff] hover:cursor-pointer"
+          {/* <button
+            className="hover:text-[#00ffff] hover:cursor-pointer"
             onClick={() => setFrames([])}
           >
             <ArrowPathIcon className="h-5 w-5" />
-          </button>
+          </button> */}
         </>
       )}
     </>

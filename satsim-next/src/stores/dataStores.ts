@@ -19,6 +19,7 @@ type Rotation = {
   obliquity: number;
   initialMeridianAngle: number;
   progradeDirection: boolean;
+  currentAngle: number;
 };
 
 type Visual = {
@@ -129,7 +130,7 @@ type Store = {
   deleteArtificialSatellite: (satId: string) => void;
 
   downloadDataAsJSON: () => void;
-  updatePosition: (positions: { [id: string]: [number, number, number] }) => void;
+  update: (result: { [id: string]: { position: [number, number, number]; rotation: number } }) => void;
 };
 
 const defaultVisual: Visual = {
@@ -217,6 +218,7 @@ export const useStore = create<Store>((set, get) => ({
               obliquity: 0,
               initialMeridianAngle: 0,
               progradeDirection: true,
+              currentAngle: 0.0,
             },
             visual: defaultVisual,
           },
@@ -252,6 +254,7 @@ export const useStore = create<Store>((set, get) => ({
                 obliquity: 0,
                 initialMeridianAngle: 0,
                 progradeDirection: true,
+                currentAngle: 0.0,
               },
               orbit: {
                 semiMajorAxis: 1e8,
@@ -381,6 +384,7 @@ export const useStore = create<Store>((set, get) => ({
                 obliquity: 0,
                 initialMeridianAngle: 0,
                 progradeDirection: true,
+                currentAngle: 0.0,
               },
               orbit: {
                 semiMajorAxis: 400000,
@@ -428,6 +432,7 @@ export const useStore = create<Store>((set, get) => ({
                 obliquity: 0,
                 initialMeridianAngle: 0,
                 progradeDirection: true,
+                currentAngle: 0.0,
               },
               orbit: {
                 semiMajorAxis: 7000,
@@ -466,7 +471,7 @@ export const useStore = create<Store>((set, get) => ({
     URL.revokeObjectURL(url);
   },
 
-  updatePosition: (positions) =>
+  update: (result) =>
     set((state) => ({
       data: {
         ...state.data,
@@ -474,32 +479,49 @@ export const useStore = create<Store>((set, get) => ({
           ...star,
           state: {
             ...star.state,
-            position: positions[star.id] || star.state.position,
+            position: result[star.id]?.position || star.state.position,
           },
+          rotation:{
+            ...star.rotation,
+            currentAngle: result[star.id]?.rotation ?? star.rotation.currentAngle,
+          }
         })),
         planets: state.data.planets.map((planet) => ({
           ...planet,
           state: {
             ...planet.state,
-            position: positions[planet.id] || planet.state.position,
+            position: result[planet.id]?.position || planet.state.position,
           },
+          rotation:{
+            ...planet.rotation,
+            currentAngle: result[planet.id]?.rotation ?? planet.rotation.currentAngle,
+          }
         })),
         naturalSatellites: state.data.naturalSatellites.map((sat) => ({
           ...sat,
           state: {
             ...sat.state,
-            position: positions[sat.id] || sat.state.position,
+            position: result[sat.id]?.position || sat.state.position,
           },
+          rotation:{
+            ...sat.rotation,
+            currentAngle: result[sat.id]?.rotation ?? sat.rotation.currentAngle,
+          }
         })),
         artificialSatellites: state.data.artificialSatellites.map((sat) => ({
           ...sat,
           state: {
             ...sat.state,
-            position: positions[sat.id] || sat.state.position,
+            position: result[sat.id]?.position || sat.state.position,
           },
+          // rotation:{
+          //   ...sat.rotation,
+          //   currentAngle: result[sat.id]?.rotation ?? sat.rotation.currentAngle,
+          // }
         })),
       },
     })),
+
 
 
 }));

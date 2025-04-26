@@ -2,13 +2,15 @@
 "use client";
 
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import Topbar from "./Topbar";
 import Sidebar from "./Sidebar";
 import Terminal from "./Terminal";
 import Beginning from "./Beginning";
 import { useStore } from "@/stores/dataStores";
 import EditPanel from "./EditPanel";
 import Scene from "./Scene";
+import ViewStateBar from "./ViewStateBar";
+import Navbar from "./Navbar";
+import Main from "./Main";
 
 export default function Desktop() {
   const { isFormOpen, selected, isDataEmpty } = useStore();
@@ -16,7 +18,7 @@ export default function Desktop() {
     <div className="h-screen">
       <PanelGroup direction="vertical" className="h-screen w-screen">
         <Panel defaultSize={5} minSize={5} maxSize={5}>
-          <Topbar />
+          <Navbar />
         </Panel>
         <PanelResizeHandle className="h-[2px] bg-gray-500 hover:bg-[#00ffff] cursor-row-resize" />
         <Panel defaultSize={95}>
@@ -28,16 +30,7 @@ export default function Desktop() {
             <Panel defaultSize={84}>
               <PanelGroup direction="vertical">
                 <Panel defaultSize={70}>
-                  <>
-                    {isFormOpen && <EditPanel />}
-                    {isDataEmpty() ? (
-                      <Beginning />
-                    ) : (
-                      <div className="h-full w-full flex items-center justify-center bg-black">
-                        <Scene />
-                      </div>
-                    )}
-                  </>
+                 <Main/>
                 </Panel>
                 <PanelResizeHandle className="h-[2px] bg-gray-500 hover:bg-[#00ffff] cursor-row-resize" />
                 <Panel defaultSize={30} maxSize={80}>

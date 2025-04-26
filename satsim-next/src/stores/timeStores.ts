@@ -13,7 +13,7 @@ interface ClockState {
 
 export const useClockStore = create<ClockState>((set) => ({
   time: 0,
-  duration: 60 * 30,
+  duration: 60,
   speed: 10,
   setTime: (t) => set({ time: t }),
   setSpeed: (v) => set({ speed: v }),
