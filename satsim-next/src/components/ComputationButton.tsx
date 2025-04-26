@@ -3,8 +3,7 @@
 import { useStore } from "@/stores/dataStores";
 import { useLogStore } from "@/stores/logStores";
 import { useClockStore } from "@/stores/timeStores";
-import { PlayIcon } from "@heroicons/react/24/solid";
-import { StopIcon } from "@heroicons/react/24/solid";
+import { PlayIcon, StopIcon } from "@heroicons/react/24/solid";
 import { is } from "@react-three/fiber/dist/declarations/src/core/utils";
 import { useState, useRef } from "react";
 

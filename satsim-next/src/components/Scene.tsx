@@ -52,10 +52,10 @@ function Scene() {
         maxDistance={8000000000 * scale}
       />
       <Stars
-        radius={8000000000 * scale}
+        radius={5000000000 * scale}
         depth={50}
-        count={5000}
-        factor={4}
+        count={20000}
+        factor={5}
         saturation={0}
         fade
       />
@@ -67,13 +67,6 @@ function Scene() {
         color="#ffffff"
         castShadow
       />
-
-      {/* <directionalLight
-        position={[50, 0, 0]}
-        intensity={10}
-        color={"#ffffcc"}
-        castShadow
-      /> */}
 
       {allBodies.map((body) => (
         <CelestialBody

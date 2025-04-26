@@ -90,7 +90,8 @@
         "period": 5400,
         "obliquity": 0,
         "initialMeridianAngle": 0,
-        "progradeDirection": true
+        "progradeDirection": true,
+        "currentAngle": 0.0
       },
       "orbit": {
         "semiMajorAxis": 6971,
