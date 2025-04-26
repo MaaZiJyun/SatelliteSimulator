@@ -3,12 +3,8 @@
 import { useStore } from "@/stores/dataStores";
 import { useLogStore } from "@/stores/logStores";
 import { useClockStore } from "@/stores/timeStores";
-import {
-  ArrowPathIcon,
-  PlayIcon,
-  StopIcon,
-  VariableIcon,
-} from "@heroicons/react/24/outline";
+import { PlayIcon } from "@heroicons/react/24/solid";
+import { StopIcon } from "@heroicons/react/24/solid";
 import { is } from "@react-three/fiber/dist/declarations/src/core/utils";
 import { useState, useRef } from "react";
 
@@ -141,9 +137,11 @@ export default function ComputationButton() {
             onClick={handlePlay}
           >
             {isPlaying ? (
-              <StopIcon className="h-5 w-5 text-[#00ffff]" />
+              <StopIcon className="h-5 w-5 text-red-400" />
             ) : (
-              <PlayIcon className="h-5 w-5" />
+              <PlayIcon
+                className={`h-5 w-5 ${frames.length > 0 && "text-green-400"}`}
+              />
             )}
           </button>
           {/* <button

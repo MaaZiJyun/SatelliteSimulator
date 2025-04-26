@@ -24,7 +24,7 @@ export const usePreferenceStore = create<PreferenceState>((set) => ({
   showOrbits: false,
   showaxis: false,
   showLabels: false,
-  showTexture: true,
+  showTexture: false,
   showWareframe: false,
   scale: 1 / 10000,
   speed: 1,

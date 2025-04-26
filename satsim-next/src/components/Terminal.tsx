@@ -83,7 +83,7 @@ export default function Terminal() {
           </button>
           <button
             className={`hover:text-[#00ffff] hover:cursor-pointer ${
-              lightOn && "text-[#00ffff]"
+              lightOn && "text-yellow-400"
             }`}
             onClick={setLightOn}
           >
