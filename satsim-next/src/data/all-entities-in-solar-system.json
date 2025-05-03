@@ -130,7 +130,7 @@
       },
       "visual": {
         "color": "#1a73e8",
-        "texture": "/textures/earth_daymap.jpg"
+        "texture": "/textures/earth.jpg"
       },
       "groundStations": [
         {
@@ -364,7 +364,7 @@
       },
       "visual": {
         "color": "#cccccc",
-        "texture": "/textures/moon_daymap.jpg"
+        "texture": "/textures/moon.jpg"
       }
     },
     {

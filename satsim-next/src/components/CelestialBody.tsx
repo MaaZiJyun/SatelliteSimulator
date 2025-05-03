@@ -9,6 +9,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useLogStore } from "@/stores/logStores";
 import { add } from "three/tsl";
 import { usePreferenceStore } from "@/stores/preferenceStores";
+import { ErrorBoundary } from "react-error-boundary";
 
 type CelestialBodyProps = {
   position: [number, number, number];
@@ -54,8 +55,8 @@ const CelestialBody = ({
   const { addLog } = useLogStore();
 
   // Load texture with error handling
-  const textureMap =
-    showTexture && texture ? useLoader(TextureLoader, texture) : null;
+  // const textureMap =
+  //   showTexture && texture ? useLoader(TextureLoader, texture) : null;
 
   // Scale factor
   const scaledRadius = radius * scale > 0.01 ? radius * scale : 0.01;
@@ -95,72 +96,134 @@ const CelestialBody = ({
     return line;
   }, [scaledRadius, obliquityRad]);
 
-  if (emissive) {
-    return (
-      <group
-        ref={groupRef}
-        position={new THREE.Vector3(...initialPosition).multiplyScalar(scale)}
-      >
-        <mesh
-          ref={meshRef}
-          rotation={[obliquityRad, initialRotationAngleRad, 0]}
-        >
-          <sphereGeometry args={[scaledRadius, 64, 64]} />
-          <meshStandardMaterial
-            map={textureMap}
-            color={color || "#ffffff"}
-            emissive={color || "#ffffff"}
-            emissiveIntensity={3}
-            emissiveMap={textureMap}
-            wireframe={wireframe}
-            toneMapped={textureMap ? true : false}
-          />
-        </mesh>
-        {showLabel && (
-          <Html>
-            <div
-              className="text-white text-sm bg-black/30 px-1 py-0.5 rounded cursor-pointer"
-              onClick={handleTagClick}
-            >
-              {(name || "Unnamed").toUpperCase()}
-            </div>
-          </Html>
-        )}
-      </group>
-    );
-  } else {
-    return (
-      <group
-        ref={groupRef}
-        position={new THREE.Vector3(...initialPosition).multiplyScalar(scale)}
-      >
-        {showAxis && <primitive object={axisLine} />}
-        <mesh
-          ref={meshRef}
-          rotation={[obliquityRad, initialRotationAngleRad, 0]}
-          receiveShadow
-        >
-          <sphereGeometry args={[scaledRadius, 64, 64]} />
-          <meshStandardMaterial
-            map={textureMap}
-            color={(!textureMap && color) || "#ffffff"}
-            wireframe={wireframe}
-            toneMapped={textureMap ? true : false}
-          />
-        </mesh>
-        {showLabel && (
-          <Html>
-            <div
-              className="text-white text-sm bg-black/30 px-1 py-0.5 rounded cursor-pointer"
-              onClick={handleTagClick}
-            >
-              {(name || "Unnamed").toUpperCase()}
-            </div>
-          </Html>
-        )}
-      </group>
+  // 针对贴图加载的材质，等同MyMaterial
+  function SafeMaterial({
+    emissive,
+    color,
+    wireframe,
+    texture,
+    showTexture,
+  }: {
+    emissive: boolean;
+    color: string;
+    wireframe: boolean;
+    texture?: string;
+    showTexture: boolean;
+  }) {
+    // 只有 showTexture && texture 有值时才加载贴图，否则忽略
+    const textureMap =
+      showTexture && texture ? useLoader(TextureLoader, texture) : null;
+
+    // 提炼材质属性
+    const materialProps = emissive
+      ? {
+          map: textureMap,
+          color: color || "#ffffff",
+          emissive: color || "#ffffff",
+          emissiveIntensity: 3,
+          emissiveMap: textureMap,
+          wireframe,
+          toneMapped: !!textureMap,
+        }
+      : {
+          map: textureMap,
+          color: (!textureMap && color) || "#ffffff",
+          wireframe,
+          toneMapped: !!textureMap,
+        };
+
+    return <meshStandardMaterial {...materialProps} />;
+  }
+
+  // 兜底材质
+  function FallbackMaterial({
+    emissive,
+    color,
+    wireframe,
+  }: {
+    emissive: boolean;
+    color: string;
+    wireframe: boolean;
+  }) {
+    const baseProps = {
+      color: color || "#ffffff",
+      wireframe,
+      toneMapped: false,
+    };
+    return emissive ? (
+      <meshStandardMaterial
+        {...baseProps}
+        emissive={color || "#ffffff"}
+        emissiveIntensity={3}
+      />
+    ) : (
+      <meshStandardMaterial {...baseProps} />
     );
   }
+
+  // // 提炼材质属性
+  // const materialProps = emissive
+  //   ? {
+  //       map: textureMap,
+  //       color: color || "#ffffff",
+  //       emissive: color || "#ffffff",
+  //       emissiveIntensity: 3,
+  //       emissiveMap: textureMap,
+  //       wireframe,
+  //       toneMapped: !!textureMap,
+  //     }
+  //   : {
+  //       map: textureMap,
+  //       color: (!textureMap && color) || "#ffffff",
+  //       wireframe,
+  //       toneMapped: !!textureMap,
+  //     };
+
+  return (
+    <group
+      ref={groupRef}
+      position={new THREE.Vector3(...initialPosition).multiplyScalar(scale)}
+    >
+      {/* 显示轴线，仅non-emissive时 */}
+      {!emissive && showAxis && <primitive object={axisLine} />}
+      <mesh
+        ref={meshRef}
+        rotation={[obliquityRad, initialRotationAngleRad, 0]}
+        receiveShadow={!emissive}
+      >
+        <sphereGeometry args={[scaledRadius, 64, 64]} />
+        {/* <meshStandardMaterial {...materialProps} /> */}
+        <ErrorBoundary
+          FallbackComponent={(props) => (
+            <FallbackMaterial
+              emissive={emissive}
+              color={color}
+              wireframe={wireframe}
+              {...props}
+            />
+          )}
+        >
+          <SafeMaterial
+            emissive={emissive}
+            color={color}
+            wireframe={wireframe}
+            texture={texture}
+            showTexture={showTexture}
+          />
+        </ErrorBoundary>
+      </mesh>
+      {showLabel && (
+        <Html>
+          <div
+            className="text-white text-sm bg-black/30 px-1 py-0.5 rounded cursor-pointer"
+            onClick={handleTagClick}
+          >
+            {(name || "Unnamed").toUpperCase()}
+          </div>
+        </Html>
+      )}
+    </group>
+  );
 };
 
 export default CelestialBody;
