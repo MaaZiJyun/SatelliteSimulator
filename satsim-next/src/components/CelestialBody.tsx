@@ -1,4 +1,3 @@
-"use client";
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
@@ -10,6 +9,7 @@ import { useLogStore } from "@/stores/logStores";
 import { add } from "three/tsl";
 import { usePreferenceStore } from "@/stores/preferenceStores";
 import { ErrorBoundary } from "react-error-boundary";
+import ObserverPoint from "./ObservationPoint";
 
 type CelestialBodyProps = {
   position: [number, number, number];
@@ -50,13 +50,10 @@ const CelestialBody = ({
 }: CelestialBodyProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
+  const observerRef = useRef<THREE.Mesh>(null); // Add a ref for the observer point
   const scale = usePreferenceStore((state) => state.scale);
   const { setCameraPosition, setOrbitTarget } = useCameraStore();
   const { addLog } = useLogStore();
-
-  // Load texture with error handling
-  // const textureMap =
-  //   showTexture && texture ? useLoader(TextureLoader, texture) : null;
 
   // Scale factor
   const scaledRadius = radius * scale > 0.01 ? radius * scale : 0.01;
@@ -64,6 +61,15 @@ const CelestialBody = ({
   // Convert angles to radians
   const obliquityRad = THREE.MathUtils.degToRad(obliquity);
   const initialRotationAngleRad = THREE.MathUtils.degToRad(rotationAngle);
+
+  // 观测点的初始经纬度
+  const observationPoint = {
+    id: "observer1",
+    name: "Observer1",
+    lat: 39.9, // 纬度
+    lon: 116.4, // 经度
+    alt: 0, // 海拔
+  };
 
   // Handle tag click to teleport camera
   const handleTagClick = () => {
@@ -96,7 +102,7 @@ const CelestialBody = ({
     return line;
   }, [scaledRadius, obliquityRad]);
 
-  // 针对贴图加载的材质，等同MyMaterial
+  // Safe Props
   function SafeMaterial({
     emissive,
     color,
@@ -110,11 +116,9 @@ const CelestialBody = ({
     texture?: string;
     showTexture: boolean;
   }) {
-    // 只有 showTexture && texture 有值时才加载贴图，否则忽略
     const textureMap =
       showTexture && texture ? useLoader(TextureLoader, texture) : null;
 
-    // 提炼材质属性
     const materialProps = emissive
       ? {
           map: textureMap,
@@ -135,7 +139,7 @@ const CelestialBody = ({
     return <meshStandardMaterial {...materialProps} />;
   }
 
-  // 兜底材质
+  // Fallback Props
   function FallbackMaterial({
     emissive,
     color,
@@ -161,24 +165,6 @@ const CelestialBody = ({
     );
   }
 
-  // // 提炼材质属性
-  // const materialProps = emissive
-  //   ? {
-  //       map: textureMap,
-  //       color: color || "#ffffff",
-  //       emissive: color || "#ffffff",
-  //       emissiveIntensity: 3,
-  //       emissiveMap: textureMap,
-  //       wireframe,
-  //       toneMapped: !!textureMap,
-  //     }
-  //   : {
-  //       map: textureMap,
-  //       color: (!textureMap && color) || "#ffffff",
-  //       wireframe,
-  //       toneMapped: !!textureMap,
-  //     };
-
   return (
     <group
       ref={groupRef}
@@ -186,13 +172,21 @@ const CelestialBody = ({
     >
       {/* 显示轴线，仅non-emissive时 */}
       {!emissive && showAxis && <primitive object={axisLine} />}
+      {emissive && (
+        <pointLight
+          intensity={3}
+          distance={0}
+          decay={0}
+          color="#ffffff"
+          castShadow
+        />
+      )}
       <mesh
         ref={meshRef}
         rotation={[obliquityRad, initialRotationAngleRad, 0]}
         receiveShadow={!emissive}
       >
         <sphereGeometry args={[scaledRadius, 64, 64]} />
-        {/* <meshStandardMaterial {...materialProps} /> */}
         <ErrorBoundary
           FallbackComponent={(props) => (
             <FallbackMaterial
@@ -211,11 +205,18 @@ const CelestialBody = ({
             showTexture={showTexture}
           />
         </ErrorBoundary>
+        {/* 观测点作为子对象 */}
+        <ObserverPoint
+          lat={observationPoint.lat}
+          lon={observationPoint.lon}
+          radius={scaledRadius}
+          showLabel={showLabel}
+        />
       </mesh>
       {showLabel && (
         <Html>
           <div
-            className="text-white text-sm bg-black/30 px-1 py-0.5 rounded cursor-pointer"
+            className="text-white text-sm bg-black/40 px-1 py-0.5 rounded cursor-pointer"
             onClick={handleTagClick}
           >
             {(name || "Unnamed").toUpperCase()}

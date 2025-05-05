@@ -131,6 +131,8 @@ type Store = {
 
   downloadDataAsJSON: () => void;
   update: (result: { [id: string]: { position: [number, number, number]; rotation: number } }) => void;
+
+  getIdTypeMapping: (type: 'star' | 'planet' | 'natural-satellite' | 'artificial-satellite') => string[];
 };
 
 const defaultVisual: Visual = {
@@ -199,7 +201,7 @@ export const useStore = create<Store>((set, get) => ({
           ...state.data.stars,
           {
             id: nanoid(),
-            name: 'New Star',
+            name: 'Untitled Star',
             type: 'star',
             primary: null, // Example primary value
             orbit: {
@@ -244,7 +246,7 @@ export const useStore = create<Store>((set, get) => ({
             ...state.data.planets,
             {
               id: nanoid(),
-              name: 'New Planet',
+              name: 'Untitled Planet',
               type: 'planet',
               primary,
               physical: { mass: 1e24, radius: 6000 },
@@ -374,7 +376,7 @@ export const useStore = create<Store>((set, get) => ({
             ...state.data.naturalSatellites,
             {
               id: nanoid(),
-              name: 'New Moon',
+              name: 'Untitled Moon',
               type: 'natural-satellite',
               primary,
               physical: { mass: 1e22, radius: 1700 },
@@ -422,7 +424,7 @@ export const useStore = create<Store>((set, get) => ({
             ...state.data.artificialSatellites,
             {
               id: nanoid(),
-              name: 'New Satellite',
+              name: 'Untitled Satellite',
               type: 'artificial-satellite',
               primary,
               physical: { mass: 1000, radius: 1 },
@@ -481,7 +483,7 @@ export const useStore = create<Store>((set, get) => ({
             ...star.state,
             position: result[star.id]?.position || star.state.position,
           },
-          rotation:{
+          rotation: {
             ...star.rotation,
             currentAngle: result[star.id]?.rotation ?? star.rotation.currentAngle,
           }
@@ -492,7 +494,7 @@ export const useStore = create<Store>((set, get) => ({
             ...planet.state,
             position: result[planet.id]?.position || planet.state.position,
           },
-          rotation:{
+          rotation: {
             ...planet.rotation,
             currentAngle: result[planet.id]?.rotation ?? planet.rotation.currentAngle,
           }
@@ -503,7 +505,7 @@ export const useStore = create<Store>((set, get) => ({
             ...sat.state,
             position: result[sat.id]?.position || sat.state.position,
           },
-          rotation:{
+          rotation: {
             ...sat.rotation,
             currentAngle: result[sat.id]?.rotation ?? sat.rotation.currentAngle,
           }
@@ -522,6 +524,18 @@ export const useStore = create<Store>((set, get) => ({
       },
     })),
 
-
+  getIdTypeMapping: (type: 'star' | 'planet' | 'natural-satellite' | 'artificial-satellite') => {
+    const { data } = get();
+    if (type === "star") {
+      return data.stars.map(star => star.id);
+    } else if (type === "planet") {
+      return data.planets.map(planet => planet.id);
+    } else if (type === "natural-satellite") {
+      return data.naturalSatellites.map(satellite => satellite.id);
+    } else if (type === "artificial-satellite") {
+      return data.artificialSatellites.map(satellite => satellite.id);
+    }
+    return [];
+  }
 
 }));

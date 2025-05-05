@@ -2,7 +2,14 @@ import { useEffect, useState } from "react";
 import { useStore } from "@/stores/dataStores";
 
 export default function EditPanel() {
-  const { selected, setSelected, data, setData, setIsFormOpen } = useStore();
+  const {
+    selected,
+    setSelected,
+    data,
+    setData,
+    setIsFormOpen,
+    getIdTypeMapping,
+  } = useStore();
   const [form, setForm] = useState<any>(null);
 
   useEffect(() => {
@@ -10,6 +17,9 @@ export default function EditPanel() {
   }, [selected]);
 
   if (!selected || !form) return null;
+  const starIdList = getIdTypeMapping("star");
+  const planetIdList = getIdTypeMapping("planet");
+  const type = selected.type;
 
   const handleChange = (key: string, value: any) => {
     setForm((prev: any) => ({
@@ -28,7 +38,12 @@ export default function EditPanel() {
     }));
   };
 
-  const handleDeepNestedChange = (key: string, subKey: string, deepKey: string, value: any) => {
+  const handleDeepNestedChange = (
+    key: string,
+    subKey: string,
+    deepKey: string,
+    value: any
+  ) => {
     setForm((prev: any) => ({
       ...prev,
       [key]: {
@@ -73,6 +88,92 @@ export default function EditPanel() {
 
   const renderField = (key: string, value: any) => {
     // Handle simple fields (string, number)
+    if (key === "id") {
+      return (
+        <div className="mb-3" key={key}>
+          <label className="block text-sm font-medium mb-1 capitalize">
+            {key.replace(/([A-Z])/g, " $1").trim()}
+          </label>
+          {(value ?? "null").toUpperCase()}
+          {/* <input
+            className="w-full px-2 py-1 border rounded cursor-not-allowed"
+            type="text"
+            value={value ?? "null"}
+            disabled
+          /> */}
+        </div>
+      );
+    }
+
+    if (key === "type") {
+      const options = [
+        "star",
+        "planet",
+        "natural-satellite",
+        "artificial-satellite",
+      ];
+      return (
+        <div className="mb-3" key={key}>
+          <label className="block text-sm font-medium mb-1 capitalize">
+            {key.replace(/([A-Z])/g, " $1").trim()}
+          </label>
+          <select
+            className="w-full px-2 py-1 border rounded focus:ring-2 focus:ring-[#00ffff] focus:border-[#00ffff]"
+            value={value ?? "None"}
+            onChange={(e) =>
+              handleChange(
+                key,
+                typeof value === "number" ? +e.target.value : e.target.value
+              )
+            }
+          >
+            {options.map((option) => (
+              <option key={option} value={option}>
+                {option.toUpperCase()}
+              </option>
+            ))}
+          </select>
+        </div>
+      );
+    }
+
+    if (key === "primary") {
+      var options: string[];
+      if (type === "planet") {
+        options = starIdList;
+      } else if (
+        type === "natural-satellite" ||
+        type === "artificial-satellite"
+      ) {
+        options = planetIdList;
+      } else {
+        options = [];
+      }
+      return (
+        <div className="mb-3" key={key}>
+          <label className="block text-sm font-medium mb-1 capitalize">
+            {key.replace(/([A-Z])/g, " $1").trim()}
+          </label>
+          <select
+            className="w-full px-2 py-1 border rounded focus:ring-2 focus:ring-[#00ffff] focus:border-[#00ffff]"
+            value={value ?? "None"}
+            onChange={(e) =>
+              handleChange(
+                key,
+                typeof value === "number" ? +e.target.value : e.target.value
+              )
+            }
+          >
+            {options.map((option) => (
+              <option key={option} value={option}>
+                {option.toUpperCase()}
+              </option>
+            ))}
+          </select>
+        </div>
+      );
+    }
+
     if (typeof value === "string" || typeof value === "number") {
       return (
         <div className="mb-3" key={key}>
@@ -95,29 +196,73 @@ export default function EditPanel() {
     }
 
     // Handle Vector3 (position, velocity)
-    if (Array.isArray(value) && value.length === 3 && key.match(/position|velocity/i)) {
+    // if (
+    //   Array.isArray(value) &&
+    //   value.length === 3 &&
+    //   key.match(/position|velocity/i)
+    // ) {
+    //   return (
+    //     <div className="mb-4" key={key}>
+    //       <h3 className="text-base font-semibold mb-2 capitalize">
+    //         {key.replace(/([A-Z])/g, " $1").trim()}
+    //       </h3>
+    //       <div className="flex space-x-2">
+    //         {["x", "y", "z"].map((axis, index) => (
+    //           <div key={axis} className="flex-1">
+    //             <label className="block text-sm mb-1 capitalize">{axis}</label>
+    //             <input
+    //               className="w-full px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-[#00ffff] focus:border-[#00ffff]"
+    //               type="number"
+    //               value={value[index]}
+    //               onChange={(e) => {
+    //                 const newValue = [...value];
+    //                 newValue[index] = +e.target.value;
+    //                 handleChange(key, newValue);
+    //               }}
+    //             />
+    //           </div>
+    //         ))}
+    //       </div>
+    //     </div>
+    //   );
+    // }
+
+    // Handle state object with position and velocity
+    if (
+      key === "state" &&
+      typeof value === "object" &&
+      value.position &&
+      value.velocity
+    ) {
       return (
         <div className="mb-4" key={key}>
-          <h3 className="text-base font-semibold mb-2 capitalize">
-            {key.replace(/([A-Z])/g, " $1").trim()}
-          </h3>
-          <div className="flex space-x-2">
-            {["x", "y", "z"].map((axis, index) => (
-              <div key={axis} className="flex-1">
-                <label className="block text-sm mb-1 capitalize">{axis}</label>
-                <input
-                  className="w-full px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-[#00ffff] focus:border-[#00ffff]"
-                  type="number"
-                  value={value[index]}
-                  onChange={(e) => {
-                    const newValue = [...value];
-                    newValue[index] = +e.target.value;
-                    handleChange(key, newValue);
-                  }}
-                />
+          <h3 className="text-base font-semibold mb-2">State</h3>
+          {Object.entries(value).map(([subKey, subValue]) => (
+            <div className="mb-2" key={subKey}>
+              <h4 className="text-sm font-medium mb-1 capitalize">
+                {subKey.replace(/([A-Z])/g, " $1").trim()}
+              </h4>
+              <div className="flex space-x-2">
+                {["x", "y", "z"].map((axis, index) => (
+                  <div key={axis} className="flex-1">
+                    <label className="block text-sm mb-1 capitalize">
+                      {axis}
+                    </label>
+                    <input
+                      className="w-full px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-[#00ffff] focus:border-[#00ffff]"
+                      type="number"
+                      value={(subValue as number[])[index]}
+                      onChange={(e) => {
+                        const newValue = [...(subValue as number[])];
+                        newValue[index] = +e.target.value;
+                        handleNestedChange(key, subKey, newValue);
+                      }}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       );
     }
@@ -202,12 +347,16 @@ export default function EditPanel() {
               <input
                 className="w-full px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-[#00ffff] focus:border-[#00ffff]"
                 type={typeof subValue === "number" ? "number" : "text"}
-                value={subValue as string | number | readonly string[] | undefined}
+                value={
+                  subValue as string | number | readonly string[] | undefined
+                }
                 onChange={(e) =>
                   handleNestedChange(
                     key,
                     subKey,
-                    typeof subValue === "number" ? +e.target.value : e.target.value
+                    typeof subValue === "number"
+                      ? +e.target.value
+                      : e.target.value
                   )
                 }
               />
@@ -313,7 +462,13 @@ export default function EditPanel() {
             onClick={() => {
               handleChange("groundStations", [
                 ...form.groundStations,
-                { id: Math.random().toString(36).substr(2, 9), name: "", lat: 0, lon: 0, alt: 0 },
+                {
+                  id: Math.random().toString(36).substr(2, 9),
+                  name: "",
+                  lat: 0,
+                  lon: 0,
+                  alt: 0,
+                },
               ]);
             }}
           >
@@ -376,7 +531,13 @@ export default function EditPanel() {
             onClick={() => {
               handleChange("observationPoints", [
                 ...form.observationPoints,
-                { id: Math.random().toString(36).substr(2, 9), name: "", lat: 0, lon: 0, alt: 0 },
+                {
+                  id: Math.random().toString(36).substr(2, 9),
+                  name: "",
+                  lat: 0,
+                  lon: 0,
+                  alt: 0,
+                },
               ]);
             }}
           >

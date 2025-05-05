@@ -9,6 +9,7 @@ import { usePreferenceStore } from "@/stores/preferenceStores";
 import SmoothCameraPosition from "./SmoothCameraMover";
 import CameraTracker from "./CameraTracker";
 import OrbitStatic from "./OrbitStatic";
+import Satellite from "./Satellite";
 
 function Scene() {
   const { data, getXZY } = useStore();
@@ -31,11 +32,21 @@ function Scene() {
     ...data.artificialSatellites,
   ];
 
+  const allCelestialBodies = [
+    ...data.stars,
+    ...data.planets,
+    ...data.naturalSatellites,
+  ];
+
+  const allSatellites = [...data.artificialSatellites];
+
   return (
     <Canvas shadows>
+      {/* Background Light */}
       <ambientLight intensity={lightOn ? 3 : 0.1} />
       <CameraTracker />
       <SmoothCameraPosition />
+      {/* The camera */}
       <PerspectiveCamera
         makeDefault
         position={finalPosition}
@@ -43,6 +54,7 @@ function Scene() {
         near={0.1}
         far={100000000}
       />
+      {/* The controller */}
       <OrbitControls
         target={orbitTarget}
         enablePan
@@ -51,6 +63,7 @@ function Scene() {
         minDistance={10 * scale}
         maxDistance={8000000000 * scale}
       />
+      {/* Background Stars */}
       <Stars
         radius={5000000000 * scale}
         depth={50}
@@ -59,16 +72,17 @@ function Scene() {
         saturation={0}
         fade
       />
-      <pointLight
+      {/* The central light */}
+      {/* <pointLight
         position={[0, 0, 0]}
         intensity={3} // 尝试更高的强度
         distance={0} // 无限范围
         decay={0} // 不衰减
         color="#ffffff"
         castShadow
-      />
+      /> */}
 
-      {allBodies.map((body) => (
+      {allCelestialBodies.map((body) => (
         <CelestialBody
           key={body.id}
           id={body.id}
@@ -89,6 +103,29 @@ function Scene() {
           showTexture={showTexture}
         />
       ))}
+
+      {allSatellites.map((sat) => {
+        const parent = allBodies.find((b) => b.id === sat.primary);
+        return (
+          <Satellite
+            key={sat.id}
+            id={sat.id}
+            name={sat.name}
+            position={getXZY(sat.state.position)}
+            observationBodyPosition={getXZY(parent?.state.position ?? [0,0,0])}
+            radius={sat.physical.radius}
+            observationBodyRadius={parent?.physical.radius ?? 0}
+            color={sat.visual.color}
+            emissive={sat.visual.emissive}
+            wireframe={showWareframe}
+            showAxis={showaxis}
+            showLabel={showLabels}
+            showOrbit={showOrbits}
+            showTexture={showTexture}
+          />
+        );
+      })}
+
       {showOrbits &&
         allBodies.map((body) => {
           const parent = allBodies.find((b) => b.id === body.primary);
