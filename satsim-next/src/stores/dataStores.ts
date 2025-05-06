@@ -130,7 +130,11 @@ type Store = {
   deleteArtificialSatellite: (satId: string) => void;
 
   downloadDataAsJSON: () => void;
-  update: (result: { [id: string]: { position: [number, number, number]; rotation: number } }) => void;
+  update: (result: {
+    [id: string]: {
+      position: [number, number, number]; velocity: [number, number, number]; rotation: number
+    }
+  }) => void;
 
   getIdTypeMapping: (type: 'star' | 'planet' | 'natural-satellite' | 'artificial-satellite') => string[];
 };
@@ -516,6 +520,7 @@ export const useStore = create<Store>((set, get) => ({
           state: {
             ...sat.state,
             position: result[sat.id]?.position || sat.state.position,
+            velocity: result[sat.id]?.velocity || sat.state.velocity,
           },
           // rotation:{
           //   ...sat.rotation,

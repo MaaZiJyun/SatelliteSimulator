@@ -1,14 +1,15 @@
 from typing import Dict, List, Optional
+from utils.calc_velocity import calc_velocity
 from utils.calc_rotation_angle import calc_rotation_angle
 from utils.new_calc_position import new_calc_position
 from models import Body
-from pydantic import BaseModel
 import numpy as np
 
 def build_positions_recursive(
     central_id: str,
     id_to_body: Dict[str, Body],
     id_to_position: Dict[str, List[float]],
+    id_to_velocity: Dict[str, List[float]], 
     id_to_rotation: Dict[str, float],
     t:int = 0
 ):
@@ -21,10 +22,8 @@ def build_positions_recursive(
     else:
         abs_rot = 0.0
         
+    # print(f"id_to_rotation before update: {id_to_rotation}")
     id_to_rotation[central_id] = abs_rot
-        
-        
-    # print(f"Body ID: {central_id}, Rotation: {abs_rot}")
 
     # 找到所有 primary 是当前天体的对象
     for body_id, body in id_to_body.items():
@@ -51,9 +50,25 @@ def build_positions_recursive(
                 current_time=t
             )
             
+            abs_vel = calc_velocity(
+                central_position=centralPosition,
+                central_mass=centralMass,
+                satellite_mass=satelliteMass,
+                semi_major_axis=semiMajorAxis,
+                eccentricity=eccentricity,
+                inclination=inclination[0],
+                longitude_of_ascending_node=body.orbit.longitudeOfAscendingNode,
+                argument_of_periapsis=body.orbit.argumentOfPeriapsis,
+                mean_anomaly_at_epoch=body.orbit.meanAnomalyAtEpoch,
+                epoch=body.orbit.epoch,
+                current_time=t,
+                delta_t=1.0
+            )
+            
             id_to_position[body.id] = abs_pos
+            id_to_velocity[body.id] = abs_vel
             
             # print(f"Body ID: {body.id}, Position: {abs_pos}")
             
             # build_positions_recursive(body.id, id_to_body, id_to_position,t)
-            build_positions_recursive(body.id, id_to_body, id_to_position, id_to_rotation, t)
+            build_positions_recursive(body.id, id_to_body, id_to_position, id_to_velocity, id_to_rotation, t)
