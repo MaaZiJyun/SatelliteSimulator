@@ -33,8 +33,24 @@
         "color": "#1a73e8",
         "texture": "/textures/earth.jpg"
       },
-      "groundStations": [],
-      "observationPoints": []
+      "groundStations": [
+        {
+          "id": "beijing",
+          "name": "Beijing",
+          "lat": 39.9,
+          "lon": 116.4,
+          "alt": 43.5
+        }
+      ],
+      "observationPoints": [
+        {
+          "id": "observer1",
+          "name": "Observer1",
+          "lat": 39.9,
+          "lon": 116.4,
+          "alt": 43.5
+        }
+      ]
     }
   ],
   "naturalSatellites": [

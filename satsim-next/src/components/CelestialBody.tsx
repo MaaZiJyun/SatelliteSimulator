@@ -7,7 +7,8 @@ import { useMemo, useRef } from "react";
 import { useLogStore } from "@/stores/logStores";
 import { usePreferenceStore } from "@/stores/preferenceStores";
 import { ErrorBoundary } from "react-error-boundary";
-import ObserverPoint from "./ObservationPoint";
+import ObserverPoint from "./LocationPoint";
+import LocationPoint from "./LocationPoint";
 
 type CelestialBodyProps = {
   position: [number, number, number];
@@ -15,17 +16,31 @@ type CelestialBodyProps = {
   obliquity: number;
   rotationAngle: number;
   rotationPeriod: number;
+  radius: number;
   color: string;
   texture?: string;
-  emissive?: boolean;
-  radius: number;
   name: string;
-  wireframe?: boolean;
   id?: string;
+  emissive?: boolean;
+  wireframe?: boolean;
   showAxis?: boolean;
   showOrbit?: boolean;
   showLabel?: boolean;
   showTexture?: boolean;
+  observationPoints?: {
+    id: string;
+    name: string;
+    lat: number;
+    lon: number;
+    alt: number;
+  }[];
+  groundStations?: {
+    id: string;
+    name: string;
+    lat: number;
+    lon: number;
+    alt: number;
+  }[];
 };
 
 const CelestialBody = ({
@@ -36,15 +51,17 @@ const CelestialBody = ({
   rotationPeriod,
   color,
   texture,
-  emissive = false,
   radius,
   name,
-  wireframe = false,
   id,
+  emissive = false,
+  wireframe = false,
   showAxis = false,
   showOrbit = false,
   showLabel = true,
   showTexture = false,
+  observationPoints = [],
+  groundStations = [],
 }: CelestialBodyProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
@@ -59,15 +76,6 @@ const CelestialBody = ({
   // Convert angles to radians
   const obliquityRad = THREE.MathUtils.degToRad(obliquity);
   const initialRotationAngleRad = THREE.MathUtils.degToRad(rotationAngle);
-
-  // 观测点的初始经纬度
-  const observationPoint = {
-    id: "observer1",
-    name: "Observer1",
-    lat: 39.9, // 纬度
-    lon: 116.4, // 经度
-    alt: 0, // 海拔
-  };
 
   // Handle tag click to teleport camera
   const handleTagClick = () => {
@@ -204,12 +212,26 @@ const CelestialBody = ({
           />
         </ErrorBoundary>
         {/* 观测点作为子对象 */}
-        <ObserverPoint
-          lat={observationPoint.lat}
-          lon={observationPoint.lon}
-          radius={scaledRadius}
-          showLabel={showLabel}
-        />
+        {observationPoints.map((o, i) => (
+          <LocationPoint
+            key={i}
+            lat={o.lat}
+            lon={o.lon}
+            radius={scaledRadius}
+            showLabel={showLabel}
+            color={"#76ff03"}
+          />
+        ))}
+        {groundStations.map((g, i) => (
+          <LocationPoint
+            key={i}
+            lat={g.lat}
+            lon={g.lon}
+            radius={scaledRadius}
+            showLabel={showLabel}
+            color={"#a49eff"}
+          />
+        ))}
       </mesh>
       {showLabel && (
         <Html>

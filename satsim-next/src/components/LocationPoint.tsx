@@ -3,14 +3,15 @@ import * as THREE from "three";
 import { useRef, useMemo } from "react";
 import { Html } from "@react-three/drei";
 
-type ObserverPointProps = {
+type LocationPointProps = {
   lat: number;
   lon: number;
   radius: number;
   showLabel: boolean;
+  color:string;
 };
 
-const ObserverPoint = ({ lat, lon, radius, showLabel }: ObserverPointProps) => {
+const LocationPoint = ({ lat, lon, radius, showLabel,color }: LocationPointProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
 
   const position = useMemo(() => {
@@ -31,12 +32,12 @@ const ObserverPoint = ({ lat, lon, radius, showLabel }: ObserverPointProps) => {
   return (
     <group position={position}>
       <mesh ref={meshRef}>
-        <sphereGeometry args={[0.002, 16, 16]} />
-        <meshBasicMaterial color="#00ffff" />
+        <sphereGeometry args={[0.004, 16, 16]} />
+        <meshBasicMaterial color={color} />
       </mesh>
       {showLabel && (
         <Html>
-          <div className="w-20 text-[#00ffff] text-sm bg-black/40 px-1 py-0.5 rounded">
+          <div className="w-20 text-sm bg-black/40 px-1 py-0.5 rounded" style={{color:color}}>
             {`lat: ${lat}, lon: ${lon}`}
           </div>
         </Html>
@@ -45,4 +46,4 @@ const ObserverPoint = ({ lat, lon, radius, showLabel }: ObserverPointProps) => {
   );
 };
 
-export default ObserverPoint;
+export default LocationPoint;

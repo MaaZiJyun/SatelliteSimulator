@@ -32,11 +32,9 @@ function Scene() {
     ...data.artificialSatellites,
   ];
 
-  const allCelestialBodies = [
-    ...data.stars,
-    ...data.planets,
-    ...data.naturalSatellites,
-  ];
+  const otherBodies = [...data.stars, ...data.naturalSatellites];
+
+  const observingBodies = [...data.planets];
 
   const allSatellites = [...data.artificialSatellites];
 
@@ -82,7 +80,7 @@ function Scene() {
         castShadow
       /> */}
 
-      {allCelestialBodies.map((body) => (
+      {otherBodies.map((body) => (
         <CelestialBody
           key={body.id}
           id={body.id}
@@ -104,6 +102,30 @@ function Scene() {
         />
       ))}
 
+      {observingBodies.map((body) => (
+        <CelestialBody
+          key={body.id}
+          id={body.id}
+          position={getXZY(body.state.position)}
+          velocity={body.state.velocity}
+          obliquity={body.rotation.obliquity}
+          rotationAngle={body.rotation.currentAngle}
+          rotationPeriod={body.rotation.period}
+          color={body.visual.color}
+          texture={body.visual.texture ? body.visual.texture : undefined}
+          emissive={body.visual.emissive}
+          radius={body.physical.radius}
+          name={body.name}
+          wireframe={showWareframe}
+          showAxis={showaxis}
+          showLabel={showLabels}
+          showOrbit={showOrbits}
+          showTexture={showTexture}
+          observationPoints={body.observationPoints}
+          groundStations={body.groundStations}
+        />
+      ))}
+
       {allSatellites.map((sat) => {
         const parent = allBodies.find((b) => b.id === sat.primary);
         return (
@@ -112,7 +134,9 @@ function Scene() {
             id={sat.id}
             name={sat.name}
             position={getXZY(sat.state.position)}
-            observationBodyPosition={getXZY(parent?.state.position ?? [0,0,0])}
+            observationBodyPosition={getXZY(
+              parent?.state.position ?? [0, 0, 0]
+            )}
             radius={sat.physical.radius}
             observationBodyRadius={parent?.physical.radius ?? 0}
             color={sat.visual.color}
