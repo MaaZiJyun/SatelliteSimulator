@@ -178,6 +178,7 @@ export const useStore = create<Store>((set, get) => ({
     };
 
     set({ data: updatedData });
+    return updatedData;
   },
 
   setSelected: (item) => set({ selected: item }),

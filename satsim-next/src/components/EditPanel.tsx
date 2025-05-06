@@ -195,38 +195,6 @@ export default function EditPanel() {
       );
     }
 
-    // Handle Vector3 (position, velocity)
-    // if (
-    //   Array.isArray(value) &&
-    //   value.length === 3 &&
-    //   key.match(/position|velocity/i)
-    // ) {
-    //   return (
-    //     <div className="mb-4" key={key}>
-    //       <h3 className="text-base font-semibold mb-2 capitalize">
-    //         {key.replace(/([A-Z])/g, " $1").trim()}
-    //       </h3>
-    //       <div className="flex space-x-2">
-    //         {["x", "y", "z"].map((axis, index) => (
-    //           <div key={axis} className="flex-1">
-    //             <label className="block text-sm mb-1 capitalize">{axis}</label>
-    //             <input
-    //               className="w-full px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-[#00ffff] focus:border-[#00ffff]"
-    //               type="number"
-    //               value={value[index]}
-    //               onChange={(e) => {
-    //                 const newValue = [...value];
-    //                 newValue[index] = +e.target.value;
-    //                 handleChange(key, newValue);
-    //               }}
-    //             />
-    //           </div>
-    //         ))}
-    //       </div>
-    //     </div>
-    //   );
-    // }
-
     // Handle state object with position and velocity
     if (
       key === "state" &&

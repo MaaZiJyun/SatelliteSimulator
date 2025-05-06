@@ -1,5 +1,6 @@
 "use client";
 
+import { useAnimationFrameStores } from "@/stores/animationFrameStores";
 import { useStore } from "@/stores/dataStores";
 import { useLogStore } from "@/stores/logStores";
 import { useClockStore } from "@/stores/timeStores";
@@ -14,7 +15,7 @@ export default function ComputationButton() {
   const [loaded, setLoaded] = useState<number>(0);
   const [estLoaded, setEstLoaded] = useState<number>(0);
   const [isloading, setIsloading] = useState<boolean>(false);
-  const [frames, setFrames] = useState<any[]>([]);
+  const { frames, setFrames, isFrameEmpty } = useAnimationFrameStores();
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -27,66 +28,10 @@ export default function ComputationButton() {
 
   const handlePlay = async () => {
     if (!isPlaying) {
-      if (loaded === 0 || frames.length === 0) {
-        // 初次加载
-        if (isDataEmpty()) {
-          addLog("Request failed: No data available.");
-          return;
-        }
-        setIsloading(true);
-        setEstLoaded(0);
-
-        estimatingRef.current = setInterval(() => {
-          setEstLoaded((prev) => (prev < TIME_SLOT - 1 ? prev + 20 : prev)); // 最多到 95%
-        }, 1);
-
-        try {
-          const res = await fetch("/api/compute", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              data: data,
-              mode: "heliocentric",
-              timeSlotNum: TIME_SLOT,
-              timeSlotDuration: TIME_SLOT_DURATION,
-            }),
-          });
-
-          console.log(
-            JSON.stringify({
-              data: data,
-              mode: "heliocentric",
-              timeSlotNum: TIME_SLOT,
-              timeSlotDuration: TIME_SLOT_DURATION,
-            })
-          );
-          const result = await res.json();
-          console.log(result.result);
-
-          if (res.ok && result?.result) {
-            setFrames(result.result);
-            setLoaded(result.result.length);
-            update(result.result[0]); // 首帧立即显示
-            setTime(0);
-          } else {
-            console.error("请求成功但结果为空：", result);
-          }
-        } catch (err) {
-          console.error("请求失败：", err);
-        } finally {
-          setIsloading(false);
-          if (estimatingRef.current) {
-            clearInterval(estimatingRef.current);
-            estimatingRef.current = null;
-          }
-        }
-      } else {
-        // 已加载，直接播放
-        update(frames[0]);
-        setTime(0);
-        setIsPlaying(true);
-        startPlayback(frames);
-      }
+      update(frames[0]);
+      setTime(0);
+      setIsPlaying(true);
+      startPlayback(frames);
     } else {
       stopPlayback();
       setIsPlaying(false);

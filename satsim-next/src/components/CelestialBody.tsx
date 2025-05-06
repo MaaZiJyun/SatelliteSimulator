@@ -1,12 +1,10 @@
-import { useFrame, useLoader, useThree } from "@react-three/fiber";
+import { useLoader } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import { TextureLoader } from "three";
-import { useStore } from "@/stores/dataStores";
 import { useCameraStore } from "@/stores/cameraStores";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import { useLogStore } from "@/stores/logStores";
-import { add } from "three/tsl";
 import { usePreferenceStore } from "@/stores/preferenceStores";
 import { ErrorBoundary } from "react-error-boundary";
 import ObserverPoint from "./ObservationPoint";

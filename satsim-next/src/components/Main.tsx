@@ -4,10 +4,12 @@ import Beginning from "./Beginning";
 import EditPanel from "./EditPanel";
 import ViewStateBar from "./ViewStateBar";
 import { useStore } from "@/stores/dataStores";
+import { useAnimationFrameStores } from "@/stores/animationFrameStores";
 
 export default function Main() {
   const { isFormOpen, isDataEmpty } = useStore();
-  if (isDataEmpty()) {
+  const { isFrameEmpty } = useAnimationFrameStores();
+  if (isDataEmpty() || isFrameEmpty()) {
     return <Beginning />;
   } else
     return (

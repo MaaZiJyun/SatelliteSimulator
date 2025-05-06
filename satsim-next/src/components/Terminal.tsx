@@ -9,6 +9,7 @@ import {
   StopCircleIcon,
   TagIcon,
 } from "@heroicons/react/24/outline";
+import AnimationPanel from "./AnimationPanel";
 
 export default function Terminal() {
   const logs = useLogStore((s) => s.logs);
@@ -33,7 +34,7 @@ export default function Terminal() {
       {/* Navigation Tabs */}
       <div className="flex justify-between items-center px-4">
         <div className="flex text-sm">
-          {["CONSOLE", "FUNCTIONS"].map((tab) => (
+          {["CONSOLE", "FUNCTIONS", "ANIMATION"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -48,7 +49,7 @@ export default function Terminal() {
           ))}
         </div>
         <div className="flex space-x-3">
-          <ComputationButton />
+          {/* <ComputationButton /> */}
           <button
             className={`hover:text-[#00ffff] hover:cursor-pointer ${
               showWareframe && "text-[#00ffff]"
@@ -113,6 +114,11 @@ export default function Terminal() {
         {activeTab === "FUNCTIONS" && (
           <div>
             <p className="text-xs">Mission details will appear here...</p>
+          </div>
+        )}
+        {activeTab === "ANIMATION" && (
+          <div className="w-full">
+            <AnimationPanel />
           </div>
         )}
       </div>

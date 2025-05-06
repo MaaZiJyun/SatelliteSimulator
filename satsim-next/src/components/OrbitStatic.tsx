@@ -107,12 +107,6 @@ export default function OrbitStatic({
     scale,
   ]);
 
-  useFrame(() => {
-    if (groupRef.current) {
-      groupRef.current.position.set(0, 0, 0);
-    }
-  });
-
   return (
     <group ref={groupRef}>
       <Line points={points} color={color} lineWidth={1} dashed={false} />
