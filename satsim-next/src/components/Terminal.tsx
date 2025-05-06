@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useLogStore } from "@/stores/logStores";
-import ComputationButton from "./ComputationButton";
 import { usePreferenceStore } from "@/stores/preferenceStores";
 import {
   GlobeAltIcon,
